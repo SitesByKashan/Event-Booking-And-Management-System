@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventHub - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-600 antialiased overflow-hidden dark:bg-[#0f1021] dark:text-slate-100 transition-colors duration-200">
+
+<div class="flex h-screen w-screen overflow-hidden">
+  
+  <div id="sidebar" class="shrink-0 transition-all duration-300"></div>
+
+  <div class="flex-1 flex flex-col h-full overflow-hidden min-w-0 transition-all duration-300">
+    
+    <div id="navbar"></div>
+
+    <main class="flex-1 p-8 space-y-6 overflow-y-auto">
+      
+      <div class="flex justify-between items-center gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-[#1e293b] dark:text-white">Dashboard</h1>
+          <p class="text-sm text-slate-400 mt-0.5">Welcome back! Here's what's happening today.</p>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <button class="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium shadow-sm hover:bg-slate-50 transition dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700 cursor-pointer whitespace-nowrap">
+            View Reports
+          </button>
+          <a href="events.html" 
+   class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+    </svg>
+    Add Event
+</a>
+        </div>
+      </div>
+
+      <div id="stats"></div>
+      
+      <div id="charts"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div id="bookings" class="lg:col-span-2"></div>
+        <div id="activity"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+
+load("sidebar", "Components/sidebar.html", "dashboard");
+load("navbar", "Components/navbar.html");
+load("stats", "Components/stats.html");
+load("charts", "Components/chart.html");
+load("bookings", "Components/booking.html");
+load("activity", "Components/activity.html");
+</script>
+</body>
+</html>

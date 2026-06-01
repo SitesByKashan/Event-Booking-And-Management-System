@@ -1,1 +1,220 @@
-hjggjjj
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventHub - Event Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-600 antialiased overflow-hidden dark:bg-[#0f1021] dark:text-slate-100 transition-colors duration-200">
+
+<div class="flex h-screen w-screen overflow-hidden">
+  <div id="sidebar" class="shrink-0 transition-all duration-300"></div>
+  <div class="flex-1 flex flex-col h-full overflow-hidden min-w-0 transition-all duration-300">
+    <div id="navbar"></div>
+
+    <main class="flex-1 p-8 space-y-6 overflow-y-auto">
+      <div class="flex justify-between items-center gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-[#1e293b] dark:text-white">Event Management</h1>
+          <p class="text-sm text-slate-400 mt-0.5">Create and manage your events</p>
+        </div>
+        <button class="bg-[#6366F1] hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md transition-all duration-200 hover:scale-[1.03] active:scale-95 cursor-pointer whitespace-nowrap">
+          + Add Event
+        </button>
+      </div>
+
+      <div class="relative w-full">
+        <span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </span>
+        <input type="text" placeholder="Search events..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/25 dark:bg-[#161730] dark:border-slate-800 dark:text-white">
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+        
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+          <div class="p-5 space-y-4">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-slate-800 dark:text-white">Summer Music Festival</h3>
+              <span class="px-2 py-0.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 rounded-full uppercase border border-emerald-100">active</span>
+            </div>
+            <div class="text-xs text-slate-500 space-y-2 dark:text-slate-400">
+              <p>📅 June 15, 2026</p>
+              <p>📍 Central Park</p>
+              <p>👥 4200 / 5000 tickets sold</p>
+              <p class="font-bold text-slate-800 dark:text-white pt-1">$149</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-slate-700 border-slate-200 hover:bg-slate-50 
+    dark:bg-[#0f1021] dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800">
+    Edit
+  </button>
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-rose-600 border-slate-200 hover:bg-rose-50 
+    dark:bg-[#0f1021] dark:text-rose-400 dark:border-slate-700 dark:hover:bg-rose-900/20">
+    Delete
+  </button>
+</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+          <div class="p-5 space-y-4">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-slate-800 dark:text-white">Tech Conference 2026</h3>
+              <span class="px-2 py-0.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 rounded-full uppercase border border-emerald-100">active</span>
+            </div>
+            <div class="text-xs text-slate-500 space-y-2 dark:text-slate-400">
+              <p>📅 July 20, 2026</p>
+              <p>📍 Convention Center</p>
+              <p>👥 1850 / 2000 tickets sold</p>
+              <p class="font-bold text-slate-800 dark:text-white pt-1">$499</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-slate-700 border-slate-200 hover:bg-slate-50 
+    dark:bg-[#0f1021] dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800">
+    Edit
+  </button>
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-rose-600 border-slate-200 hover:bg-rose-50 
+    dark:bg-[#0f1021] dark:text-rose-400 dark:border-slate-700 dark:hover:bg-rose-900/20">
+    Delete
+  </button>
+</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+          <div class="p-5 space-y-4">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-slate-800 dark:text-white">Photography Workshop</h3>
+              <span class="px-2 py-0.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 rounded-full uppercase border border-emerald-100">active</span>
+            </div>
+            <div class="text-xs text-slate-500 space-y-2 dark:text-slate-400">
+              <p>📅 June 30, 2026</p>
+              <p>📍 Studio A</p>
+              <p>👥 45 / 50 tickets sold</p>
+              <p class="font-bold text-slate-800 dark:text-white pt-1">$149</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-slate-700 border-slate-200 hover:bg-slate-50 
+    dark:bg-[#0f1021] dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800">
+    Edit
+  </button>
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-rose-600 border-slate-200 hover:bg-rose-50 
+    dark:bg-[#0f1021] dark:text-rose-400 dark:border-slate-700 dark:hover:bg-rose-900/20">
+    Delete
+  </button>
+</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+          <div class="p-5 space-y-4">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-slate-800 dark:text-white">Gourmet & Grains Expo</h3>
+              <span class="px-2 py-0.5 text-[10px] font-bold text-slate-500 bg-slate-100 rounded-full uppercase border border-slate-200">draft</span>
+            </div>
+            <div class="text-xs text-slate-500 space-y-2 dark:text-slate-400">
+              <p>📅 Aug 10, 2026</p>
+              <p>📍 Grand Hotel</p>
+              <p>👥 120 / 1000 tickets sold</p>
+              <p class="font-bold text-slate-800 dark:text-white pt-1">$199</p>
+            </div>
+           <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-slate-700 border-slate-200 hover:bg-slate-50 
+    dark:bg-[#0f1021] dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800">
+    Edit
+  </button>
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-rose-600 border-slate-200 hover:bg-rose-50 
+    dark:bg-[#0f1021] dark:text-rose-400 dark:border-slate-700 dark:hover:bg-rose-900/20">
+    Delete
+  </button>
+</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+          <div class="p-5 space-y-4">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-slate-800 dark:text-white">Startup Pitch Night</h3>
+              <span class="px-2 py-0.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 rounded-full uppercase border border-emerald-100">active</span>
+            </div>
+            <div class="text-xs text-slate-500 space-y-2 dark:text-slate-400">
+              <p>📅 June 25, 2026</p>
+              <p>📍 Innovation Hub</p>
+              <p>👥 250 / 300 tickets sold</p>
+              <p class="font-bold text-slate-800 dark:text-white pt-1">$99</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-slate-700 border-slate-200 hover:bg-slate-50 
+    dark:bg-[#0f1021] dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800">
+    Edit
+  </button>
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-rose-600 border-slate-200 hover:bg-rose-50 
+    dark:bg-[#0f1021] dark:text-rose-400 dark:border-slate-700 dark:hover:bg-rose-900/20">
+    Delete
+  </button>
+</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-pointer">
+          <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+          <div class="p-5 space-y-4">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-slate-800 dark:text-white">Yoga Retreat 2026</h3>
+              <span class="px-2 py-0.5 text-[10px] font-bold text-amber-600 bg-amber-50 rounded-full uppercase border border-amber-100">upcoming</span>
+            </div>
+            <div class="text-xs text-slate-500 space-y-2 dark:text-slate-400">
+              <p>📅 Sep 05, 2026</p>
+              <p>📍 Mountain Resort</p>
+              <p>👥 0 / 50 tickets sold</p>
+              <p class="font-bold text-slate-800 dark:text-white pt-1">$299</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-slate-700 border-slate-200 hover:bg-slate-50 
+    dark:bg-[#0f1021] dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800">
+    Edit
+  </button>
+  <button class="py-2 border rounded-xl text-xs font-semibold transition-all duration-200 
+    bg-white text-rose-600 border-slate-200 hover:bg-rose-50 
+    dark:bg-[#0f1021] dark:text-rose-400 dark:border-slate-700 dark:hover:bg-rose-900/20">
+    Delete
+  </button>
+</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  load("sidebar", "Components/sidebar.html", "events");
+  load("navbar", "Components/navbar.html");
+</script>
+</body>
+</html>

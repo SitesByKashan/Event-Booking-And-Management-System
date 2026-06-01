@@ -1,0 +1,100 @@
+<div class="w-full mb-6 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Booking Management</h1>
+    <p class="text-slate-500 text-sm">Manage and track all event bookings</p>
+  </div>
+  <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-all duration-200 hover:scale-[1.03] active:scale-95 shadow-sm hover:shadow-md">
+    + Export Data
+  </button>
+</div>
+
+<div class="flex gap-4 mb-6">
+  <div class="relative flex-1">
+    <input type="text" placeholder="Search by booking ID, user, or event..." class="w-full pl-4 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/25 dark:bg-[#161730] dark:border-slate-800 dark:text-white">
+  </div>
+  <button class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:border-slate-300 hover:shadow-inner dark:bg-[#161730] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800">
+    Filters
+  </button>
+</div>
+
+<div class="w-full bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800">
+  <table class="w-full text-left border-collapse">
+    <thead>
+      <tr class="text-slate-500 text-sm border-b border-slate-100 dark:border-slate-800">
+        <th class="px-6 py-5 font-semibold">Booking ID</th>
+        <th class="px-6 py-5 font-semibold">User</th>
+        <th class="px-6 py-5 font-semibold">Event</th>
+        <th class="px-6 py-5 font-semibold">Date</th>
+        <th class="px-6 py-5 font-semibold">Tickets</th>
+        <th class="px-6 py-5 font-semibold">Amount</th>
+        <th class="px-6 py-5 font-semibold">Status</th>
+        <th class="px-6 py-5 font-semibold">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="text-slate-700 dark:text-slate-300 divide-y divide-slate-100 dark:divide-slate-800">
+      
+      <tr class="booking-row transition-colors duration-200 hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">#BK-001</td>
+        <td class="px-6 py-5">John Doe<br><span class="text-xs text-slate-400 font-normal">john@example.com</span></td>
+        <td class="px-6 py-5">Summer Music Festival</td>
+        <td class="px-6 py-5">2026-06-15</td>
+        <td class="px-6 py-5">2</td>
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">$298</td>
+        <td class="px-6 py-5"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40">approved</span></td>
+        <td class="px-6 py-5 text-lg"><button class="text-slate-400 hover:text-slate-600">👁️</button></td>
+      </tr>
+
+      <tr class="booking-row transition-colors duration-200 hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">#BK-002</td>
+        <td class="px-6 py-5">Sarah Smith<br><span class="text-xs text-slate-400 font-normal">sarah@example.com</span></td>
+        <td class="px-6 py-5">Tech Conference 2026</td>
+        <td class="px-6 py-5">2026-07-20</td>
+        <td class="px-6 py-5">1</td>
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">$499</td>
+        <td class="px-6 py-5"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-100 text-amber-600 dark:bg-amber-900/40">pending</span></td>
+        <td class="px-6 py-5 flex gap-2 text-lg">
+            <button class="text-slate-400 hover:text-slate-600">👁️</button>
+            <button class="text-emerald-500 hover:text-emerald-600">✅</button>
+            <button class="text-rose-500 hover:text-rose-600">❌</button>
+        </td>
+      </tr>
+
+      <tr class="booking-row transition-colors duration-200 hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">#BK-003</td>
+        <td class="px-6 py-5">Mike Johnson<br><span class="text-xs text-slate-400 font-normal">mike@example.com</span></td>
+        <td class="px-6 py-5">Photography Workshop</td>
+        <td class="px-6 py-5">2026-06-30</td>
+        <td class="px-6 py-5">1</td>
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">$149</td>
+        <td class="px-6 py-5"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40">approved</span></td>
+        <td class="px-6 py-5 text-lg"><button class="text-slate-400 hover:text-slate-600">👁️</button></td>
+      </tr>
+
+      <tr class="booking-row transition-colors duration-200 hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">#BK-004</td>
+        <td class="px-6 py-5">Emily Brown<br><span class="text-xs text-slate-400 font-normal">emily@example.com</span></td>
+        <td class="px-6 py-5">Gourmet & Grains Expo</td>
+        <td class="px-6 py-5">2026-08-10</td>
+        <td class="px-6 py-5">3</td>
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">$597</td>
+        <td class="px-6 py-5"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-rose-100 text-rose-600 dark:bg-rose-900/40">rejected</span></td>
+        <td class="px-6 py-5 text-lg"><button class="text-slate-400 hover:text-slate-600">👁️</button></td>
+      </tr>
+
+      <tr class="booking-row transition-colors duration-200 hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">#BK-005</td>
+        <td class="px-6 py-5">David Lee<br><span class="text-xs text-slate-400 font-normal">david@example.com</span></td>
+        <td class="px-6 py-5">Startup Pitch Night</td>
+        <td class="px-6 py-5">2026-06-25</td>
+        <td class="px-6 py-5">1</td>
+        <td class="px-6 py-5 font-medium text-slate-800 dark:text-slate-200">$99</td>
+        <td class="px-6 py-5"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-100 text-amber-600 dark:bg-amber-900/40">pending</span></td>
+        <td class="px-6 py-5 flex gap-2 text-lg">
+            <button class="text-slate-400 hover:text-slate-600">👁️</button>
+            <button class="text-emerald-500 hover:text-emerald-600">✅</button>
+            <button class="text-rose-500 hover:text-rose-600">❌</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
