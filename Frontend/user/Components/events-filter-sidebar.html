@@ -1,0 +1,54 @@
+<div class="w-full bg-white p-5 rounded-xl border border-gray-100 space-y-6 text-left">
+    
+    <div class="flex items-center justify-between border-b border-gray-50 pb-3">
+        <h3 class="text-sm font-bold text-[#0F172A]">Filters</h3>
+        <button onclick="resetAllFilters()" class="text-xs font-semibold text-[#5C7CFA] hover:text-[#4C6EF5] transition-colors cursor-pointer">Clear All</button>
+    </div>
+    
+    <div class="space-y-2">
+        <label class="text-xs font-bold text-[#475569]">Category</label>
+        <select id="sidebarCategory" onchange="filterEventsPanel()" class="w-full bg-slate-50 border border-gray-200/60 rounded-lg px-3 py-2 text-xs font-semibold text-[#1E293B] outline-none cursor-pointer focus:border-[#5C7CFA]">
+            <option value="All">All Categories</option>
+            <option value="Concerts">Concerts</option>
+            <option value="Sports">Sports</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Tech Conferences">Tech Conferences</option>
+            <option value="Fashion Shows">Fashion Shows</option>
+        </select>
+    </div>
+
+    <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs font-bold text-[#475569]">
+            <span>Price Range</span>
+            <span id="priceRangeDisplay" class="text-gray-400 font-semibold">$0 - $500</span>
+        </div>
+        <input type="range" id="sidebarPriceSlider" min="0" max="500" value="500" oninput="updatePriceSliderLabel(this.value)" class="w-full accent-[#5C7CFA] h-1 bg-gray-100 rounded-lg cursor-pointer">
+    </div>
+
+    <div class="space-y-2">
+        <label class="text-xs font-bold text-[#475569]">Event Type</label>
+        <div class="space-y-2 text-xs font-semibold text-gray-600">
+            <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="eventType" value="All" checked onchange="filterEventsPanel()" class="w-4 h-4 accent-[#5C7CFA]">
+                <span>All Events</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="eventType" value="Free" onchange="filterEventsPanel()" class="w-4 h-4 accent-[#5C7CFA]">
+                <span>Free Entry</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="eventType" value="Paid" onchange="filterEventsPanel()" class="w-4 h-4 accent-[#5C7CFA]">
+                <span>Paid Passes</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Live execution script tracker interface logic loops
+    function updatePriceSliderLabel(val) {
+        const displayLabel = document.getElementById("priceRangeDisplay");
+        if(displayLabel) displayLabel.innerText = `$0 - $${val}`;
+        if(typeof filterEventsPanel === "function") filterEventsPanel();
+    }
+</script>
