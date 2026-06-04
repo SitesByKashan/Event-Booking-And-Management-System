@@ -34,9 +34,6 @@
           <p class="text-sm text-slate-400 mt-0.5">Welcome back! Here's what's happening today.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-          <button class="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium shadow-sm hover:bg-slate-50 transition dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700 cursor-pointer whitespace-nowrap">
-            View Reports
-          </button>
           <a href="events.html" 
    class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,22 +49,247 @@
       <div id="charts"></div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div id="bookings" class="lg:col-span-2"></div>
+        <div id="recentBookings" class="lg:col-span-2"></div>
         <div id="activity"></div>
       </div>
     </main>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../assets/js/admin-api.js"></script>
 <script src="js/app.js"></script>
-<script>
 
-load("sidebar", "Components/sidebar.html", "dashboard");
+<script>
+load("sidebar", "Components/sidebar.html?v=10", "dashboard");
 load("navbar", "Components/navbar.html");
-load("stats", "Components/stats.html");
-load("charts", "Components/chart.html");
-load("bookings", "Components/booking.html");
-load("activity", "Components/activity.html");
+
+load("stats", "Components/stats.html?v=10").then(() => {
+  loadDashboardStats();
+});
+
+load("charts", "Components/chart.html?v=10").then(() => {
+  loadChartsData();
+});
+
+load("recentBookings", "Components/recentBooking.html").then(() => {
+  loadRecentBookings();
+});
+load("activity", "Components/activity.html").then(() => {
+  loadActivityTimeline();
+});
+
+
+let revenueChartInstance = null;
+let eventChartInstance = null;
+
+async function loadDashboardStats() {
+  try {
+    const response = await getDashboardStats();
+
+    console.log("Dashboard Stats:", response);
+
+    if (!response.status) return;
+
+    document.getElementById("totalRevenue").innerText =
+      "Rs. " + response.data.total_revenue;
+
+    document.getElementById("totalBookings").innerText =
+      response.data.total_bookings;
+
+    document.getElementById("totalEvents").innerText =
+      response.data.total_events;
+
+    document.getElementById("totalUsers").innerText =
+      response.data.total_users;
+
+  } catch (error) {
+    console.log("Dashboard Error:", error);
+  }
+}
+
+async function loadChartsData() {
+  try {
+    const response = await getChartStats();
+
+    console.log("Chart Stats:", response);
+
+    if (!response.status) return;
+
+    const revenueCanvas = document.getElementById("revenueChart");
+    const eventCanvas = document.getElementById("eventChart");
+
+    if (!revenueCanvas || !eventCanvas) {
+      console.log("Canvas not found");
+      return;
+    }
+
+    if (revenueChartInstance) revenueChartInstance.destroy();
+    if (eventChartInstance) eventChartInstance.destroy();
+
+    revenueChartInstance = new Chart(revenueCanvas, {
+      type: "line",
+      data: {
+        labels: response.data.revenue.labels,
+        datasets: [{
+          label: "Revenue",
+          data: response.data.revenue.values,
+          borderColor: "#6366f1",
+          backgroundColor: "rgba(99, 102, 241, 0.2)",
+          fill: true,
+          tension: 0.4,
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    eventChartInstance = new Chart(eventCanvas, {
+      type: "doughnut",
+      data: {
+        labels: response.data.categories.labels,
+        datasets: [{
+          data: response.data.categories.values,
+          backgroundColor: ["#6366f1", "#3b82f6", "#8b5cf6", "#10b981"]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "75%",
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+  } catch (error) {
+    console.log("Chart Error:", error);
+  }
+}
+
+async function loadRecentBookings() {
+
+    try {
+
+        const response = await getBookings();
+
+        if (!response.status) return;
+
+        const container =
+            document.getElementById(
+                "recentBookingsContainer"
+            );
+
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        const recentBookings =
+            response.data.slice(0, 5);
+
+        recentBookings.forEach((booking) => {
+
+            let badgeClass = "";
+
+            if (
+                booking.status === "confirmed"
+            ) {
+
+                badgeClass =
+                    "text-emerald-600 bg-emerald-50 border-emerald-100";
+
+            } else if (
+                booking.status === "pending"
+            ) {
+
+                badgeClass =
+                    "text-amber-600 bg-amber-50 border-amber-100";
+
+            } else {
+
+                badgeClass =
+                    "text-red-600 bg-red-50 border-red-100";
+            }
+
+            container.innerHTML += `
+
+            <div class="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-xl">
+
+                <div>
+                    <h4 class="text-sm font-semibold text-slate-800 dark:text-white">
+                        ${booking.user_name}
+                    </h4>
+
+                    <p class="text-xs text-slate-400">
+                        ${booking.event_title}
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-slate-800 dark:text-white">
+                            Rs. ${booking.total_amount}
+                        </p>
+
+                        <p class="text-[10px] text-slate-400">
+                            ${booking.created_at}
+                        </p>
+                    </div>
+
+                    <span class="px-3 py-1 text-[10px] font-bold border rounded-full ${badgeClass}">
+                        ${booking.status}
+                    </span>
+
+                </div>
+
+            </div>
+
+            `;
+        });
+
+    } catch(error) {
+
+        console.log(
+            "Recent Booking Error:",
+            error
+        );
+    }
+}
+
+async function loadActivityTimeline() {
+  const response = await getBookings();
+  const timeline = document.getElementById("activityTimeline");
+
+  if (!response.status) return;
+
+  const bookings = response.data.slice(0, 5);
+
+  timeline.innerHTML = "";
+
+  bookings.forEach((booking) => {
+    timeline.innerHTML += `
+      <div class="relative flex items-start gap-4 z-10">
+        <div class="mt-1.5 w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-white dark:ring-[#161730] shrink-0"></div>
+        <div>
+          <h4 class="text-sm font-medium text-slate-800 dark:text-white">
+            New booking created by ${booking.user_name}
+          </h4>
+          <p class="text-xs text-slate-400 mt-1">
+            ${booking.event_title} • Rs. ${booking.total_amount}
+          </p>
+        </div>
+      </div>
+    `;
+  });
+}
 </script>
 </body>
 </html>

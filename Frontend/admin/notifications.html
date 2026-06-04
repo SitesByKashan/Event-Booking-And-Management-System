@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventHub - Notifications</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { 
-            darkMode: 'class' 
+        tailwind.config = {
+            darkMode: 'class'
         }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body class="bg-slate-50 dark:bg-[#0f1021] text-slate-900 dark:text-white">
     <div class="flex w-full h-screen overflow-hidden">
-        
+
         <div id="sidebar" class="shrink-0 transition-all duration-300"></div>
-        
+
         <div class="flex-1 flex flex-col min-w-0">
             <div id="navbar"></div>
-            
+
             <!-- Main Content Area -->
             <main class="flex-1 p-8 overflow-y-auto">
                 <!-- Header Section -->
@@ -29,38 +31,226 @@
                         <p class="text-slate-500">Stay updated with all activities</p>
                     </div>
                     <div class="flex gap-3">
-                        <button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1e2040]/50 border border-slate-200 dark:border-[#2d3055] rounded-xl text-sm font-medium text-slate-700 dark:text-white transition-all duration-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-800 hover:text-indigo-600 dark:hover:text-indigo-300">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+
+                        <button onclick="markAllNotificationsRead()"
+                            class="mark-read-btn flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1e2040]/50 border border-slate-200 dark:border-[#2d3055] rounded-xl text-sm font-medium text-slate-700 dark:text-white transition-all duration-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-800 hover:text-indigo-600 dark:hover:text-indigo-300">
+
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
                                 <path d="M4 12.6l3.7 3.7L14.7 9" />
                                 <path d="M10 12.6l3.7 3.7L20.7 9" />
                             </svg>
+
                             Mark All Read
                         </button>
-                        <button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1e2040]/50 border border-slate-200 dark:border-[#2d3055] rounded-xl text-sm font-medium text-slate-700 dark:text-white transition-all duration-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-800 hover:text-indigo-600 dark:hover:text-indigo-300">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+                        <button onclick="clearAllNotifications()"
+                            class="mark-read-btn flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1e2040]/50 border border-slate-200 dark:border-[#2d3055] rounded-xl text-sm font-medium text-slate-700 dark:text-white transition-all duration-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-800 hover:text-indigo-600 dark:hover:text-indigo-300">
+
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
                             </svg>
+
                             Clear All
                         </button>
+
                     </div>
                 </div>
 
                 <!-- Stats and List Area -->
                 <div class="flex flex-col gap-1">
                     <div id="notif-stats" class="w-full"></div>
-                    <div id="notif-list" class="bg-white dark:bg-[#161730] p-6 rounded-2xl border border-slate-200 dark:border-slate-800"></div>
+                    <div id="notif-list"
+                        class="bg-white dark:bg-[#161730] p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    </div>
                 </div>
             </main>
         </div>
     </div>
 
+    <script src="../assets/js/admin-api.js"></script>
     <script src="js/app.js"></script>
+
     <script>
         load("sidebar", "Components/sidebar.html", "notifications");
         load("navbar", "Components/navbar.html");
-        load("notif-stats", "Components/notification-stats.html");
-        load("notif-list", "Components/notification-list.html");
+
+        load("notif-stats", "Components/notification-stats.html").then(() => {
+            loadNotificationStats();
+        });
+
+        load("notif-list", "Components/notification-list.html").then(() => {
+            loadNotifications();
+        });
+
+        async function loadNotificationStats() {
+            const bookingsRes = await getBookings();
+            const usersRes = await getUsers();
+
+            const bookings = bookingsRes.status ? bookingsRes.data : [];
+            const users = usersRes.status ? usersRes.data : [];
+
+            const highPriority = bookings.filter(b => b.status !== "confirmed").length;
+
+            document.getElementById("notifBookings").innerText = bookings.length;
+            document.getElementById("notifUsers").innerText = users.length;
+            document.getElementById("notifHighPriority").innerText = highPriority;
+            document.getElementById("notifTotal").innerText =
+                bookings.length + users.length;
+        }
+
+        async function loadNotifications() {
+            const container = document.getElementById("notificationList");
+
+            const bookingsRes = await getBookings();
+            const usersRes = await getUsers();
+
+            const bookings = bookingsRes.status ? bookingsRes.data : [];
+            const users = usersRes.status ? usersRes.data : [];
+
+            const notifications = [];
+
+            bookings.slice(0, 5).forEach((booking) => {
+                notifications.push({
+                    title: "New Booking Created",
+                    type: "Booking",
+                    message: `${booking.user_name} booked ${booking.tickets} tickets for "${booking.event_title}".`,
+                    time: booking.created_at,
+                    icon: "fas fa-calendar-check",
+                    color: "text-indigo-500"
+                });
+            });
+
+            users.slice(0, 3).forEach((user) => {
+                notifications.push({
+                    title: "New User Registered",
+                    type: "Account",
+                    message: `${user.name} created an account with email ${user.email}.`,
+                    time: user.created_at || "Recently",
+                    icon: "fas fa-user-plus",
+                    color: "text-purple-500"
+                });
+            });
+
+            if (notifications.length === 0) {
+                container.innerHTML = `
+      <div class="p-5 text-center text-slate-400">
+        No notifications found
+      </div>
+    `;
+                return;
+            }
+
+            container.innerHTML = "";
+
+            notifications.forEach((notif) => {
+                container.innerHTML += `
+      <div class="flex items-center p-5 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-[#1f2140] transition-all duration-300">
+        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center ${notif.color} mr-4">
+          <i class="${notif.icon} text-lg"></i>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-3 mb-0.5">
+            <h5 class="font-semibold text-slate-900 dark:text-white truncate">
+              ${notif.title}
+            </h5>
+            <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded">
+              ${notif.type}
+            </span>
+          </div>
+
+          <p class="text-sm text-slate-500 dark:text-slate-400 truncate">
+            ${notif.message}
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4 ml-4">
+          <span class="text-xs text-slate-400">
+            ${notif.time}
+          </span>
+
+          <div class="flex items-center gap-1">
+
+  <button
+    onclick="markAsRead(this)"
+    class="p-2 text-slate-400 hover:text-emerald-500 transition-colors">
+    <i class="fas fa-check"></i>
+  </button>
+
+  <button
+    onclick="deleteNotification(this)"
+    class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+    <i class="fas fa-trash"></i>
+  </button>
+
+</div>
+        </div>
+      </div>
+    `;
+            });
+        }
+
+        function markAsRead(button) {
+
+            const row = button.closest(".flex.items-center.p-5");
+
+            row.classList.add(
+                "opacity-60"
+            );
+
+            button.innerHTML =
+                '<i class="fas fa-check-double text-emerald-500"></i>';
+
+            button.disabled = true;
+        }
+
+        function deleteNotification(button) {
+
+            const row = button.closest(".flex.items-center.p-5");
+
+            row.style.transition = "0.3s";
+
+            row.style.opacity = "0";
+
+            setTimeout(() => {
+                row.remove();
+            }, 300);
+        }
+        function markAllNotificationsRead() {
+
+  document.querySelectorAll(".notification-row").forEach((row) => {
+    row.classList.add("opacity-60");
+
+    const checkBtn = row.querySelector(".mark-read-btn");
+
+    if (checkBtn) {
+      checkBtn.innerHTML =
+        '<i class="fas fa-check-double text-emerald-500"></i>';
+      checkBtn.disabled = true;
+    }
+  });
+
+  alert("All notifications marked as read");
+}
+
+function clearAllNotifications() {
+
+  const container = document.getElementById("notificationList");
+
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="p-10 text-center text-slate-400">
+      No notifications available
+    </div>
+  `;
+}
     </script>
 </body>
+
 </html>

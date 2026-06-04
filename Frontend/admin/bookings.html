@@ -23,11 +23,61 @@
   </div>
 </div>
 
+<script src="../assets/js/admin-api.js"></script>
 <script src="js/app.js"></script>
+
+
 <script>
   load("sidebar", "Components/sidebar.html", "bookings");
   load("navbar", "Components/navbar.html");
   load("table", "Components/table.html");
 </script>
+
+
+<script>
+window.onload = async function () {
+  await load("sidebar", "Components/sidebar.html", "bookings");
+  await load("navbar", "Components/navbar.html");
+  await load("table", "Components/table.html");
+
+  const tbody = document.getElementById("bookingTableBody");
+
+  if (!tbody) {
+    alert("bookingTableBody nahi mila");
+    return;
+  }
+
+  const response = await getBookings();
+
+  if (!response.status) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="px-6 py-8 text-center text-red-500">
+          ${response.message}
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  response.data.forEach((booking) => {
+    tbody.innerHTML += `
+      <tr>
+        <td class="px-6 py-5">#BK-${booking.id}</td>
+        <td class="px-6 py-5">${booking.user_name}<br><span class="text-xs text-slate-400">${booking.user_email}</span></td>
+        <td class="px-6 py-5">${booking.event_title}</td>
+        <td class="px-6 py-5">${booking.created_at}</td>
+        <td class="px-6 py-5">${booking.tickets}</td>
+        <td class="px-6 py-5">Rs. ${booking.total_amount}</td>
+        <td class="px-6 py-5">${booking.status}</td>
+        <td class="px-6 py-5">👁️</td>
+      </tr>
+    `;
+  });
+};
+</script>
+
 </body>
 </html>

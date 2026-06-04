@@ -1,36 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventHub - Reports & Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { 
-        darkMode: 'class'
-     }
+    <script>tailwind.config = {
+            darkMode: 'class'
+        }
     </script>
 </head>
+
 <body class="bg-slate-50 dark:bg-[#0f1021] text-slate-900 dark:text-white">
     <div class="flex w-full h-screen overflow-hidden">
-        <div id="sidebar" class="transition-all duration-300 ease-in-out flex-shrink-0 w-64 h-full overflow-y-auto"></div>
+        <div id="sidebar" class="transition-all duration-300 ease-in-out flex-shrink-0 w-64 h-full overflow-y-auto">
+        </div>
 
         <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
             <div id="navbar"></div>
-            
+
             <main class="flex-1 p-8">
                 <div class="flex justify-between items-center mb-8">
                     <div>
                         <h1 class="text-2xl font-bold">Reports & Analytics</h1>
                         <p class="text-slate-500">Comprehensive business insights and metrics</p>
                     </div>
-                   <div class="flex gap-3">
-    <button class="px-4 py-2 bg-white dark:bg-[#1a1c35] border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium text-slate-700 dark:text-white transition-all duration-300 hover:bg-slate-50 dark:hover:bg-[#252848] hover:border-slate-300">
-        Export PDF
-    </button>
-    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium transition-all duration-300 hover:bg-indigo-700 hover:scale-105 active:scale-95">
-    Export CSV
-</button>
-</div>
+                 
                 </div>
 
                 <div id="stats-container" class="mb-8"></div>
@@ -42,15 +38,153 @@
             </main>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/js/admin-api.js"></script>
     <script src="js/app.js"></script>
+
     <script>
+        let userGrowthChartInstance = null;
+        let popularEventsChartInstance = null;
         load("sidebar", "Components/sidebar.html", "reports");
         load("navbar", "Components/navbar.html");
-        load("stats-container", "Components/reports-stats.html");
-        load("line-chart-container", "Components/reports-line.html");
-        load("bar-chart-container", "Components/reports-bar.html");
+
+        load("stats-container", "Components/reports-stats.html").then(() => {
+            loadReportStats();
+        });
+
+        load("line-chart-container", "Components/reports-line.html").then(() => {
+            loadUserGrowthChart();
+        });
+
+        load("bar-chart-container", "Components/reports-bar.html").then(() => {
+            loadPopularEventsChart();
+        });
+
+        async function loadReportStats() {
+            const response = await getDashboardStats();
+
+            if (!response.status) return;
+
+            document.getElementById("reportTotalRevenue").innerText =
+                "Rs. " + response.data.total_revenue;
+
+            document.getElementById("reportTotalUsers").innerText =
+                response.data.total_users;
+
+            document.getElementById("reportTotalEvents").innerText =
+                response.data.total_events;
+
+            document.getElementById("reportTotalBookings").innerText =
+                response.data.total_bookings;
+        }
+
+        async function loadUserGrowthChart() {
+            const response = await getUsers();
+
+            if (!response.status) return;
+
+            const users = response.data;
+
+            const monthlyUsers = {};
+
+            users.forEach((user) => {
+                const date = new Date(user.created_at || new Date());
+                const month = date.toLocaleString("en-US", { month: "short" });
+
+                if (!monthlyUsers[month]) {
+                    monthlyUsers[month] = 0;
+                }
+
+                monthlyUsers[month]++;
+            });
+
+            const labels = Object.keys(monthlyUsers);
+            const values = Object.values(monthlyUsers);
+
+            const canvas = document.getElementById("userGrowthChart");
+
+            if (!canvas) return;
+
+            if (userGrowthChartInstance) {
+                userGrowthChartInstance.destroy();
+            }
+
+            userGrowthChartInstance = new Chart(canvas, {
+                type: "line",
+                data: {
+                    labels: labels.length ? labels : ["Users"],
+                    datasets: [{
+                        label: "Users",
+                        data: values.length ? values : [users.length],
+                        borderColor: "#6366f1",
+                        backgroundColor: "rgba(99, 102, 241, 0.15)",
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        async function loadPopularEventsChart() {
+            const response = await getBookings();
+
+            if (!response.status) return;
+
+            const bookings = response.data;
+
+            const eventCounts = {};
+
+            bookings.forEach((booking) => {
+                const eventName = booking.event_title || "Unknown Event";
+
+                if (!eventCounts[eventName]) {
+                    eventCounts[eventName] = 0;
+                }
+
+                eventCounts[eventName]++;
+            });
+
+            const sortedEvents = Object.entries(eventCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+            const labels = sortedEvents.map(item => item[0]);
+            const values = sortedEvents.map(item => item[1]);
+
+            const canvas = document.getElementById("popularEventsChart");
+
+            if (!canvas) return;
+
+            if (popularEventsChartInstance) {
+                popularEventsChartInstance.destroy();
+            }
+
+            popularEventsChartInstance = new Chart(canvas, {
+                type: "bar",
+                data: {
+                    labels: labels.length ? labels : ["No Data"],
+                    datasets: [{
+                        label: "Bookings",
+                        data: values.length ? values : [0],
+                        backgroundColor: "#6366f1",
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: "y",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
     </script>
 </body>
+
 </html>

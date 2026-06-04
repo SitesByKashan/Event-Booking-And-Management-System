@@ -23,12 +23,12 @@
                         <h1 class="text-2xl font-bold">Payments & Transactions</h1>
                         <p class="text-slate-500">Monitor revenue and transaction history</p>
                     </div>
-                    <button class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-300 ease-in-out bg-indigo-600 hover:bg-indigo-700 hover:scale-[1.02] active:scale-[0.98]">
+                    <!-- <button class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-300 ease-in-out bg-indigo-600 hover:bg-indigo-700 hover:scale-[1.02] active:scale-[0.98]">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
     </svg>
     Export Report
-</button>
+</button> -->
                 </div>
 
                 <div id="stats-cards" class="flex flex-wrap gap-6 mb-4 w-full">
@@ -42,13 +42,178 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/app.js"></script>
-    <script>
-        load("sidebar", "Components/sidebar.html","payments");
-        load("navbar", "Components/navbar.html");
-        load("stats-cards", "Components/stats-cards.html");
-        load("revenue-chart", "Components/revenue-charts.html");
-        load("transactions-table", "Components/transactions-table.html");
-    </script>
+<script src="../assets/js/admin-api.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+load("sidebar", "Components/sidebar.html", "payments");
+load("navbar", "Components/navbar.html");
+
+load("stats-cards", "Components/stats-cards.html").then(() => {
+  loadPaymentStats();
+});
+
+load("revenue-chart", "Components/revenue-charts.html").then(() => {
+  loadPaymentChart();
+});
+
+load("transactions-table", "Components/transactions-table.html").then(() => {
+  loadTransactions();
+});
+
+async function loadPaymentStats() {
+  const response = await getBookings();
+
+  if (!response.status) return;
+
+  const bookings = response.data;
+
+  const totalTransactions = bookings.length;
+
+  const totalRevenue = bookings
+    .filter(b => b.status === "confirmed")
+    .reduce((sum, b) => sum + Number(b.total_amount || 0), 0);
+
+  const avgTransaction =
+    totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
+
+  document.getElementById("paymentTotalRevenue").innerText =
+    "Rs. " + totalRevenue.toFixed(0);
+
+  document.getElementById("paymentTotalTransactions").innerText =
+    totalTransactions;
+
+  document.getElementById("paymentAvgTransaction").innerText =
+    "Rs. " + avgTransaction.toFixed(0);
+}
+
+async function loadTransactions() {
+  const tbody = document.getElementById("transactionsTableBody");
+
+  try {
+    const response = await getBookings();
+
+    if (!response.status) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="py-4 text-center text-red-500">
+            ${response.message}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const bookings = response.data;
+
+    if (bookings.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="py-4 text-center text-slate-400">
+            No transactions found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = "";
+
+    bookings.forEach((booking) => {
+      const statusClass =
+        booking.status === "confirmed"
+          ? "bg-emerald-500/10 text-emerald-500"
+          : booking.status === "pending"
+          ? "bg-amber-500/10 text-amber-600"
+          : "bg-rose-500/10 text-rose-500";
+
+      tbody.innerHTML += `
+        <tr class="hover:bg-blue-500/5 transition-colors duration-200 cursor-default">
+          <td class="py-4 font-medium">#PAY-${booking.id}</td>
+          <td class="py-4">${booking.user_name}</td>
+          <td class="py-4 text-slate-500">${booking.event_title}</td>
+          <td class="py-4 text-slate-500">${booking.created_at}</td>
+          <td class="py-4 font-semibold">Rs. ${booking.total_amount}</td>
+          <td class="py-4">
+            <span class="px-3 py-1 ${statusClass} rounded-full text-xs font-medium">
+              ${booking.status}
+            </span>
+          </td>
+          <td class="py-4 text-slate-400">↓</td>
+        </tr>
+      `;
+    });
+
+  } catch (error) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="py-4 text-center text-red-500">
+          Failed to load transactions
+        </td>
+      </tr>
+    `;
+  }
+}
+
+async function loadPaymentChart() {
+  const response = await getBookings();
+
+  if (!response.status) return;
+
+  const bookings = response.data;
+
+  const monthlyRevenue = {};
+
+  bookings
+    .filter(b => b.status === "confirmed")
+    .forEach((booking) => {
+      const date = new Date(booking.created_at);
+      const month = date.toLocaleString("en-US", { month: "short" });
+
+      if (!monthlyRevenue[month]) {
+        monthlyRevenue[month] = 0;
+      }
+
+      monthlyRevenue[month] += Number(booking.total_amount || 0);
+    });
+
+  const labels = Object.keys(monthlyRevenue);
+  const values = Object.values(monthlyRevenue);
+
+  const canvas = document.getElementById("paymentRevenueChart");
+
+  if (!canvas) return;
+
+  new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: values,
+          backgroundColor: "#6366f1",
+          borderRadius: 8
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+</script>
 </body>
 </html>

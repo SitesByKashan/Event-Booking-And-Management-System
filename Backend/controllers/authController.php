@@ -1,11 +1,12 @@
 <?php
 
 require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../models/User.php";
 
 function register() {
-
     global $conn;
 
+    $userModel = new User($conn);
     $data = json_decode(file_get_contents("php://input"), true);
 
     $name = $data['name'] ?? '';
@@ -13,37 +14,19 @@ function register() {
     $password = $data['password'] ?? '';
 
     if ($name == '' || $email == '' || $password == '') {
-
-        echo json_encode([
-            "status" => false,
-            "message" => "All fields are required"
-        ]);
-
+        echo json_encode(["status" => false, "message" => "All fields are required"]);
         return;
     }
 
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    $sql = "INSERT INTO users (name, email, password)
-            VALUES (:name, :email, :password)";
-
-    $stmt = $conn->prepare($sql);
-
     try {
-
-        $stmt->execute([
-            ":name" => $name,
-            ":email" => $email,
-            ":password" => $hashedPassword
-        ]);
+        $userModel->create($name, $email, $password);
 
         echo json_encode([
             "status" => true,
             "message" => "User registered successfully"
         ]);
 
-    } catch(PDOException $e) {
-
+    } catch(Exception $e) {
         echo json_encode([
             "status" => false,
             "message" => "Email already exists"
@@ -52,43 +35,25 @@ function register() {
 }
 
 function login() {
-
     global $conn;
 
     session_start();
 
+    $userModel = new User($conn);
     $data = json_decode(file_get_contents("php://input"), true);
 
     $email = $data['email'] ?? '';
     $password = $data['password'] ?? '';
 
     if ($email == '' || $password == '') {
-
-        echo json_encode([
-            "status" => false,
-            "message" => "Email and password are required"
-        ]);
-
+        echo json_encode(["status" => false, "message" => "Email and password are required"]);
         return;
     }
 
-    $sql = "SELECT * FROM users WHERE email = :email";
-
-    $stmt = $conn->prepare($sql);
-
-    $stmt->execute([
-        ":email" => $email
-    ]);
-
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user = $userModel->findByEmail($email);
 
     if (!$user || !password_verify($password, $user['password'])) {
-
-        echo json_encode([
-            "status" => false,
-            "message" => "Invalid email or password"
-        ]);
-
+        echo json_encode(["status" => false, "message" => "Invalid email or password"]);
         return;
     }
 
@@ -102,9 +67,8 @@ function login() {
             "id" => $user['id'],
             "name" => $user['name'],
             "email" => $user['email'],
-            "role" => $user['role']
+            "role" => $user['role'],
+            "status" => $user['status']
         ]
     ]);
 }
-
-?>

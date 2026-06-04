@@ -25,11 +25,92 @@
             </main>
         </div>
     </div>
-    <script src="js/app.js"></script>
-    <script>
-        load("sidebar", "Components/sidebar.html", "settings");
-        load("navbar", "Components/navbar.html");
-        load("settings-content", "Components/settings-form.html");
-    </script>
+  <script src="../assets/js/admin-api.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+load("sidebar", "Components/sidebar.html", "settings");
+load("navbar", "Components/navbar.html");
+
+load("settings-content", "Components/settings-form.html").then(() => {
+  loadProfile();
+  setupSettingsForms();
+});
+
+async function loadProfile() {
+  const response = await getProfile();
+
+  if (!response.status) {
+    alert(response.message);
+    return;
+  }
+
+  const user = response.data;
+
+  document.getElementById("settingName").value = user.name || "";
+  document.getElementById("settingEmail").value = user.email || "";
+  document.getElementById("settingPhone").value = user.phone || "";
+  document.getElementById("settingRole").value = user.role || "admin";
+
+  const initials = (user.name || "Admin User")
+    .split(" ")
+    .map(word => word[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
+
+  document.getElementById("profileInitials").innerText = initials;
+}
+
+function setupSettingsForms() {
+  document.getElementById("profileForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      name: document.getElementById("settingName").value,
+      email: document.getElementById("settingEmail").value,
+      phone: document.getElementById("settingPhone").value
+    };
+
+    const response = await updateProfile(data);
+
+    alert(response.message);
+
+    if (response.status) {
+      loadProfile();
+    }
+  });
+
+  document.getElementById("passwordForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (newPassword !== confirmPassword) {
+      alert("New password and confirm password do not match");
+      return;
+    }
+
+    const data = {
+      current_password: document.getElementById("currentPassword").value,
+      new_password: newPassword
+    };
+
+    const response = await updatePassword(data);
+
+    alert(response.message);
+
+    if (response.status) {
+      document.getElementById("passwordForm").reset();
+    }
+  });
+}
+
+function saveSettingToggle(key) {
+  const oldValue = localStorage.getItem(key);
+  localStorage.setItem(key, oldValue === "1" ? "0" : "1");
+}
+</script>
 </body>
 </html>
