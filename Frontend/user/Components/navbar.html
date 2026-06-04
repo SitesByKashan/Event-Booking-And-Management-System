@@ -1,0 +1,35 @@
+<nav class="w-full bg-white border-b border-[#F1F5F9] sticky top-0 z-50 px-6 lg:px-16 h-20 flex items-center justify-around select-none">
+    
+    <div class="flex items-center h-full space-x-10">
+        <div class="flex items-center space-x-2 cursor-pointer nav-link" data-page="home">
+            <span class="text-xl font-bold tracking-tight text-[#4B4EFC] flex items-center">
+                <i class="fa-solid fa-layer-group text-lg mr-2"></i>EventHub
+            </span>
+        </div>
+        
+        <div class="hidden md:flex items-center h-full space-x-6 text-xs font-semibold" id="navbar-links">
+            <a href="/user/index.html" data-page="home" class="nav-link text-[#000000] font-bold h-full flex items-center px-1 border-b-2 border-[#4B4EFC] transition-all">Home</a>
+            <a href="/user/events.html" data-page="events" class="nav-link text-[#64748B] hover:text-[#000000] h-full flex items-center px-1 border-b-2 border-transparent transition-all">Events</a>
+            <a href="/user/mybookings.html" data-page="bookings" class="nav-link text-[#64748B] hover:text-[#000000] h-full flex items-center px-1 border-b-2 border-transparent transition-all">My Bookings</a>
+        </div>
+    </div>
+    
+    <div class="flex items-center space-x-6">
+       
+        <button  class="text-[#1E293B] hover:text-[#4B4EFC] transition-colors cursor-pointer text-sm">
+            <a href="/user/my-wishlist.html" class="fa-regular fa-heart"></a>
+        </button>
+        <button class="text-[#1E293B] hover:text-[#4B4EFC] transition-colors cursor-pointer text-sm relative">
+            <a href="/user/notifications.html" class="fa-regular fa-bell"></a>
+            <span class="absolute -top-1.5 -right-1 w-3 h-3 bg-[#EF4444] text-[8px] font-bold text-white rounded-full flex items-center justify-center scale-90">1</span>
+        </button>
+        <button class="text-[#1E293B] hover:text-[#4B4EFC] transition-colors cursor-pointer text-sm">
+            <a href="/user/profile-settings.html" class="fa-regular fa-user"></a>
+        </button>
+        
+        <button  class="bg-[#5C7CFA] hover:bg-[#4C6EF5] active:scale-95 text-white font-semibold text-xs px-5 py-2 rounded-lg transition-all cursor-pointer shadow-sm">
+           <a href="/user/login.html" >Login</a>
+        </button>
+    </div>
+
+</nav>
