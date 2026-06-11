@@ -17,6 +17,69 @@ async function registerUser(name, email, password) {
   return await response.json();
 }
 
+async function verifyAccount(email, code) {
+  const response = await fetch(API_BASE_URL + "verify_account", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      email: email,
+      code: code
+    })
+  });
+
+  return await response.json();
+}
+
+async function resendCode(email) {
+  const response = await fetch(API_BASE_URL + "resend_code", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      email: email
+    })
+  });
+
+  return await response.json();
+}
+
+async function forgotPassword(email) {
+  const response = await fetch(API_BASE_URL + "forgot_password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      email: email
+    })
+  });
+
+  return await response.json();
+}
+
+async function resetPassword(email, code, newPassword) {
+  const response = await fetch(API_BASE_URL + "reset_password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      email: email,
+      code: code,
+      new_password: newPassword
+    })
+  });
+
+  return await response.json();
+}
+
 async function loginUser(email, password) {
   const response = await fetch(API_BASE_URL + "login", {
     method: "POST",
