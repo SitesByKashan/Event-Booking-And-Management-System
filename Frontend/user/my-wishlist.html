@@ -1,87 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wishlist | EventHub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; margin: 0; }
-        
-        /* Rigid Grid to prevent breaking */
-        .wishlist-grid {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
-            gap: 2rem !important;
-            width: 100% !important;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist | EventHub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #F8FAFC;
+      margin: 0;
+    }
+
+    .wishlist-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+      gap: 2rem !important;
+      width: 100% !important;
+    }
+  </style>
 </head>
+
 <body>
-    <div id="navbar"></div>
-    <main style="max-width: 1280px; margin: 0 auto; padding: 48px 24px;">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px;">
-            <div>
-                <h1 style="font-size: 32px; font-weight: 800; color: #0F172A; margin: 0;">My Wishlist</h1>
-                <p style="color: #64748B; font-weight: 500; margin-top: 8px;">4 saved events</p>
-            </div>
-            <button style="color: #EF4444; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-trash-can"></i> Clear All
-            </button>
-        </div>
 
-        <div class="wishlist-grid">
-            
-            <div style="background: white; border-radius: 24px; padding: 12px; border: 1px solid #F1F5F9; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                <div style="position: relative; height: 200px; width: 100%; margin-bottom: 16px;">
-                    <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=800&q=80" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
-                    <div style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.3); backdrop-filter: blur(4px); padding: 10px; border-radius: 50%;">
-                        <i class="fa-solid fa-heart" style="color: white; font-size: 16px;"></i>
-                    </div>
-                </div>
-                
-                <div style="padding: 0 8px 8px;">
-                    <p style="color: #4B4EFC; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Concerts</p>
-                    <h3 style="font-size: 18px; font-weight: 700; color: #0F172A; margin: 8px 0;">Summer Music Festival 2026</h3>
-                    <p style="color: #94A3B8; font-size: 13px; font-weight: 600; margin: 0;">15 June 2026 • New York</p>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; border-top: 1px solid #F8FAFC; padding-top: 16px;">
-                        <span style="font-size: 22px; font-weight: 800; color: #0F172A;">$89</span>
-                        <button style="background: #4B4EFC; color: white; border: none; padding: 12px 20px; border-radius: 16px; font-weight: 700; font-size: 13px;">Book Now</button>
-                    </div>
-                </div>
-            </div>
-            </div>
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
 
-        <div style="display: flex; justify-content: center; margin-top: 64px;">
-            <button style="display: flex; align-items: center; gap: 12px; color: #EF4444; border: 2px solid #FEE2E2; background: white; padding: 16px 40px; border-radius: 20px; font-weight: 700; font-size: 14px;">
-                <i class="fa-regular fa-trash-can"></i> Clear All Wishlist Items
-            </button>
-        </div>
+if (!loggedUser) {
+  window.location.href = "login.html";
+}
+</script>
 
-    </main>
+<div id="navbar"></div>
 
-             <div id="Footer"></div>
+<main style="max-width: 1280px; margin: 0 auto; padding: 48px 24px;">
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:48px;">
+    <div>
+      <h1 style="font-size:32px; font-weight:800; color:#0F172A; margin:0;">
+        My Wishlist
+      </h1>
+
+      <p id="wishlistCount" style="color:#64748B; font-weight:500; margin-top:8px;">
+        Loading...
+      </p>
+    </div>
+
+    <button onclick="clearWishlist()" style="color:#EF4444; font-weight:700; display:flex; align-items:center; gap:8px;">
+      <i class="fa-solid fa-trash-can"></i>
+      Clear All
+    </button>
+  </div>
+
+  <div id="wishlistGrid" class="wishlist-grid"></div>
+
+  <div style="display:flex; justify-content:center; margin-top:64px;">
+    <button onclick="clearWishlist()" style="display:flex; align-items:center; gap:12px; color:#EF4444; border:2px solid #FEE2E2; background:white; padding:16px 40px; border-radius:20px; font-weight:700; font-size:14px;">
+      <i class="fa-regular fa-trash-can"></i>
+      Clear All Wishlist Items
+    </button>
+  </div>
+
+</main>
+
+<div id="Footer"></div>
 
 <script src="js/app.js"></script>
-    <script>
-         async function load(id, file) {
-        try {
-            const response = await fetch(file);
-            if (!response.ok) throw new Error("File nahi mili");
-            const data = await response.text();
-            document.getElementById(id).innerHTML = data;
-        } catch (error) {
-            console.error("Hero Load Error:", error);
-            // Agar ye error console mein aaye, toh file path check karein
-        }
-    }
-        load("navbar", "Components/navbar.html");
-        load("Footer", "Components/Footer.html");
-    </script>
-  
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+load("navbar", "Components/navbar.html").then(() => {
+  updateUserNavbar();
+});
+
+load("Footer", "Components/Footer.html");
+
+renderWishlist();
+
+function getWishlistKey() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user ? `wishlist_${user.id}` : "wishlist";
+}
+
+function getWishlist() {
+  return JSON.parse(localStorage.getItem(getWishlistKey())) || [];
+}
+
+function saveWishlist(wishlist) {
+  localStorage.setItem(getWishlistKey(), JSON.stringify(wishlist));
+}
+
+function renderWishlist() {
+  const grid = document.getElementById("wishlistGrid");
+  const count = document.getElementById("wishlistCount");
+
+  const wishlist = getWishlist();
+
+  count.innerText =
+    `${wishlist.length} saved event${wishlist.length === 1 ? "" : "s"}`;
+
+  if (wishlist.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column:1 / -1; text-align:center; padding:60px; color:#94A3B8; font-weight:700; background:white; border-radius:24px; border:1px solid #F1F5F9;">
+        No wishlist events found
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  wishlist.forEach((event) => {
+    const image = event.image
+      ? `http://localhost:8000/${event.image}`
+      : "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=800&q=80";
+
+    const price = Number(event.price || 0);
+    const priceText = price === 0 ? "Free" : "Rs. " + price;
+
+    grid.innerHTML += `
+      <div style="background:white; border-radius:24px; padding:12px; border:1px solid #F1F5F9; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+
+        <div style="position:relative; height:200px; width:100%; margin-bottom:16px;">
+          <img
+            src="${image}"
+            style="width:100%; height:100%; object-fit:cover; border-radius:20px;"
+            onerror="this.src='https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=800&q=80'">
+
+          <button
+            onclick="removeFromWishlist(${event.id})"
+            style="position:absolute; top:12px; right:12px; background:rgba(255,255,255,0.9); backdrop-filter:blur(4px); padding:10px; border-radius:50%; border:none; cursor:pointer;">
+            <i class="fa-solid fa-heart" style="color:#EF4444; font-size:16px;"></i>
+          </button>
+        </div>
+
+        <div style="padding:0 8px 8px;">
+          <p style="color:#4B4EFC; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; margin:0;">
+            ${event.category_name || "General"}
+          </p>
+
+          <h3 style="font-size:18px; font-weight:700; color:#0F172A; margin:8px 0;">
+            ${event.title}
+          </h3>
+
+          <p style="color:#94A3B8; font-size:13px; font-weight:600; margin:0;">
+            ${event.event_date || ""} • ${event.location || "No location"}
+          </p>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px; border-top:1px solid #F8FAFC; padding-top:16px;">
+            <span style="font-size:22px; font-weight:800; color:#0F172A;">
+              ${priceText}
+            </span>
+
+            <button
+              onclick="window.location.href='event-details.html?id=${event.id}'"
+              style="background:#4B4EFC; color:white; border:none; padding:12px 20px; border-radius:16px; font-weight:700; font-size:13px; cursor:pointer;">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function removeFromWishlist(eventId) {
+  let wishlist = getWishlist();
+
+  wishlist = wishlist.filter(event => String(event.id) !== String(eventId));
+
+  saveWishlist(wishlist);
+
+  renderWishlist();
+}
+
+function clearWishlist() {
+  localStorage.removeItem(getWishlistKey());
+  renderWishlist();
+}
+</script>
+
 </body>
 </html>

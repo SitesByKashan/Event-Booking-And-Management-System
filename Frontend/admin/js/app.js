@@ -404,5 +404,33 @@ async function loadNavbarUser() {
 
 function logoutUser() {
   localStorage.clear();
-  window.location.href = "login.html";
+  window.location.href = "../user/index.html";
 }
+
+function showToast(message, type = "success") {
+
+    let bgColor = "#10B981";
+
+    if (type === "error") {
+        bgColor = "#EF4444";
+    }
+
+    if (type === "warning") {
+        bgColor = "#F59E0B";
+    }
+
+    Toastify({
+        text: message,
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        close: true,
+        stopOnFocus: true,
+        style: {
+            background: bgColor,
+            borderRadius: "12px"
+        }
+    }).showToast();
+}
+
+window.showToast = showToast;

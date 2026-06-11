@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <title>EventHub - Notifications</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,6 +16,15 @@
 </head>
 
 <body class="bg-slate-50 dark:bg-[#0f1021] text-slate-900 dark:text-white">
+
+    <script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
+
+if (!loggedUser || loggedUser.role !== "admin") {
+  window.location.href = "../user/login.html";
+}
+</script>
+
     <div class="flex w-full h-screen overflow-hidden">
 
         <div id="sidebar" class="shrink-0 transition-all duration-300"></div>
@@ -74,6 +84,7 @@
 
     <script src="../assets/js/admin-api.js"></script>
     <script src="js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
         load("sidebar", "Components/sidebar.html", "notifications");
@@ -235,7 +246,7 @@
     }
   });
 
-  alert("All notifications marked as read");
+  showToast("All notifications marked as read");
 }
 
 function clearAllNotifications() {

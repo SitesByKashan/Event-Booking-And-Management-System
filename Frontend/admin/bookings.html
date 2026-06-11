@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <title>EventHub - Booking Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -12,6 +13,14 @@
   <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
 <body class="bg-[#f8fafc] text-slate-600 antialiased overflow-hidden dark:bg-slate-900 dark:text-slate-100">
+
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
+
+if (!loggedUser || loggedUser.role !== "admin") {
+  window.location.href = "../user/login.html";
+}
+</script>
 
 <div class="flex h-screen w-screen overflow-hidden">
   <div id="sidebar" class="shrink-0 transition-all duration-300"></div>
@@ -25,6 +34,7 @@
 
 <script src="../assets/js/admin-api.js"></script>
 <script src="js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 
 <script>
@@ -41,11 +51,6 @@ window.onload = async function () {
   await load("table", "Components/table.html");
 
   const tbody = document.getElementById("bookingTableBody");
-
-  if (!tbody) {
-    alert("bookingTableBody nahi mila");
-    return;
-  }
 
   const response = await getBookings();
 

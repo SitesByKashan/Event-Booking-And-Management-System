@@ -14,7 +14,7 @@ class Booking
         $sql = "INSERT INTO bookings 
         (user_id, event_id, tickets, total_amount, status)
         VALUES 
-        (:user_id, :event_id, :tickets, :total_amount, 'confirmed')";
+        (:user_id, :event_id, :tickets, :total_amount, 'pending')";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -71,4 +71,10 @@ class Booking
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function confirm($id) {
+    $sql = "UPDATE bookings SET status = 'confirmed' WHERE id = :id";
+    $stmt = $this->conn->prepare($sql);
+    return $stmt->execute([":id" => $id]);
+}
 }

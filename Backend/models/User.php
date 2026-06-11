@@ -33,24 +33,33 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findById($id) {
-        $sql = "SELECT id, name, email, role, status 
-                FROM users 
-                WHERE id = :id";
+   public function findById($id) {
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            ":id" => $id
-        ]);
+    $sql = "SELECT
+                id,
+                name,
+                email,
+                phone,
+                role,
+                status
+            FROM users
+            WHERE id = :id";
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    $stmt = $this->conn->prepare($sql);
+
+    $stmt->execute([
+        ":id" => $id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
     public function getAllUsers() {
         $sql = "SELECT 
                     users.id,
                     users.name,
                     users.email,
+                    users.phone,
                     users.role,
                     users.status,
                     COUNT(bookings.id) AS total_bookings
@@ -61,6 +70,7 @@ class User {
                     users.id,
                     users.name,
                     users.email,
+                    users.phone,
                     users.role,
                     users.status
                 ORDER BY users.id DESC";

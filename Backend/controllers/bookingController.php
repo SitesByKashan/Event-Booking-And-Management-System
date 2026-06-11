@@ -12,6 +12,7 @@ function createBooking()
     $userModel = new User($conn);
     $eventModel = new Event($conn);
     $bookingModel = new Booking($conn);
+    
 
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -59,7 +60,6 @@ function createBooking()
         $conn->beginTransaction();
 
         $booking_id = $bookingModel->create($user_id, $event_id, $tickets, $total_amount);
-        $eventModel->reduceTickets($event_id, $tickets);
 
         $conn->commit();
 

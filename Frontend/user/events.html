@@ -1,259 +1,809 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Events - EventHub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #F8FAFC; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Events - EventHub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #F8FAFC;
+    }
+  </style>
 </head>
+
 <body class="text-[#1E293B] antialiased min-h-screen flex flex-col justify-between">
 
-    <div id="navbar"></div>
+  <div id="navbar"></div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow flex flex-col space-y-6">
-        
-        <div class="text-left">
-            <h1 class="text-xl font-bold text-[#0F172A] tracking-tight mb-4">Search Events</h1>
-            <div class="flex flex-col sm:flex-row items-center gap-3 w-full">
-                <div class="relative w-full flex-grow">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400 pointer-events-none">
-                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                    </span>
-                    <input type="text" placeholder="Search for events..." class="w-full bg-white border border-gray-200 text-xs rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-[#4B4EFC] shadow-[0_2px_8px_rgba(0,0,0,0.01)] placeholder:text-gray-400">
-                </div>
-                <button class="w-full sm:w-auto bg-white border border-gray-200 hover:border-gray-300 px-4 py-3 rounded-xl flex items-center justify-center space-x-2 text-xs font-bold text-[#1E293B] shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all shrink-0">
-                    <i class="fa-solid fa-sliders text-[11px] text-gray-500"></i>
-                    <span>Filters</span>
-                </button>
-            </div>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow flex flex-col space-y-6">
+
+    <div class="text-left">
+      <h1 class="text-xl font-bold text-[#0F172A] tracking-tight mb-4">Search Events</h1>
+
+      <div class="flex flex-col sm:flex-row items-center gap-3 w-full">
+        <div class="relative w-full flex-grow">
+          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400 pointer-events-none">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </span>
+
+          <input id="searchInput" type="text" placeholder="Search for events..."
+            class="w-full bg-white border border-gray-200 text-xs rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-[#4B4EFC] shadow-[0_2px_8px_rgba(0,0,0,0.01)] placeholder:text-gray-400">
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8 items-start w-full pt-2">
+
+      <aside class="w-full lg:w-64 bg-white border border-gray-100 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-6 shrink-0 text-left">
+
+        <div class="flex items-center justify-between pb-1">
+          <h3 class="text-xs font-bold text-[#0F172A] tracking-tight">Filters</h3>
+          <button onclick="clearFilters()" class="text-[10px] font-bold text-[#4B4EFC] hover:underline">
+            Clear All
+          </button>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-8 items-start w-full pt-2">
-            
-            <aside class="w-full lg:w-64 bg-white border border-gray-100 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-6 shrink-0 text-left">
-                <div class="flex items-center justify-between pb-1">
-                    <h3 class="text-xs font-bold text-[#0F172A] tracking-tight">Filters</h3>
-                    <button class="text-[10px] font-bold text-[#4B4EFC] hover:underline">Clear All</button>
-                </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">Category</label>
+          <select id="categoryFilter"
+            class="w-full bg-white border border-gray-200 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#4B4EFC] text-[#1E293B]">
+            <option value="All">All Categories</option>
+          </select>
+        </div>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">Category</label>
-                    <select class="w-full bg-white border border-gray-200 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#4B4EFC] text-[#1E293B]">
-                        <option>All Categories</option>
-                        <option>Music</option>
-                        <option>Sports</option>
-                        <option>Tech Conferences</option>
-                        <option>Fashion Shows</option>
-                    </select>
-                </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider">
+            <span>Price Range</span>
+            <span id="priceLabel" class="text-[#4B4EFC] font-bold">Rs. 0 - Rs. 50000</span>
+          </div>
 
-                <div class="space-y-2">
-                    <div class="flex items-center justify-between text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider">
-                        <span>Price Range</span>
-                        <span class="text-[#4B4EFC] font-bold">$0 - $500</span>
-                    </div>
-                    <input type="range" min="0" max="500" value="250" class="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#4B4EFC]">
-                </div>
+          <input id="priceFilter" type="range" min="0" max="50000" value="50000"
+            class="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#4B4EFC]">
+        </div>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">Event Type</label>
-                    <div class="space-y-2 text-xs font-semibold text-[#475569]">
-                        <label class="flex items-center space-x-2.5 cursor-pointer">
-                            <input type="radio" name="event_type" checked class="w-3.5 h-3.5 border-gray-300 accent-[#4B4EFC]">
-                            <span>All Events</span>
-                        </label>
-                        <label class="flex items-center space-x-2.5 cursor-pointer">
-                            <input type="radio" name="event_type" class="w-3.5 h-3.5 border-gray-300 accent-[#4B4EFC]">
-                            <span>Free</span>
-                        </label>
-                        <label class="flex items-center space-x-2.5 cursor-pointer">
-                            <input type="radio" name="event_type" class="w-3.5 h-3.5 border-gray-300 accent-[#4B4EFC]">
-                            <span>Paid</span>
-                        </label>
-                    </div>
-                </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">Event Type</label>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">Date</label>
-                    <input type="date" class="w-full bg-white border border-gray-200 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#4B4EFC] text-gray-400">
-                </div>
+          <div class="space-y-2 text-xs font-semibold text-[#475569]">
+            <label class="flex items-center space-x-2.5 cursor-pointer">
+              <input type="radio" name="event_type" value="All" checked class="w-3.5 h-3.5 border-gray-300 accent-[#4B4EFC]">
+              <span>All Events</span>
+            </label>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">City</label>
-                    <input type="text" placeholder="Enter city" class="w-full bg-white border border-gray-200 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#4B4EFC] placeholder:text-gray-300">
-                </div>
+            <label class="flex items-center space-x-2.5 cursor-pointer">
+              <input type="radio" name="event_type" value="Free" class="w-3.5 h-3.5 border-gray-300 accent-[#4B4EFC]">
+              <span>Free</span>
+            </label>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">Minimum Rating</label>
-                    <select class="w-full bg-white border border-gray-200 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#4B4EFC] text-[#1E293B]">
-                        <option>Any Rating</option>
-                        <option>4.5 & Above</option>
-                        <option>4.0 & Above</option>
-                    </select>
-                </div>
+            <label class="flex items-center space-x-2.5 cursor-pointer">
+              <input type="radio" name="event_type" value="Paid" class="w-3.5 h-3.5 border-gray-300 accent-[#4B4EFC]">
+              <span>Paid</span>
+            </label>
+          </div>
+        </div>
 
-                <label class="flex items-center space-x-2.5 cursor-pointer pt-1 text-xs font-semibold text-[#475569]">
-                    <input type="checkbox" class="w-3.5 h-3.5 border-gray-300 rounded accent-[#4B4EFC]">
-                    <span>Only show available seats</span>
-                </label>
-            </aside>
+        <div class="space-y-2">
+          <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">Date</label>
+          <input id="dateFilter" type="date"
+            class="w-full bg-white border border-gray-200 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#4B4EFC] text-gray-400">
+        </div>
 
-            <div class="flex-grow w-full space-y-4">
-                <div class="flex items-center justify-between text-xs font-semibold text-[#64748B] text-left w-full">
-                    <span>6 events found</span>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-[11px]">Sort by:</span>
-                        <select class="bg-transparent font-bold text-[#0F172A] focus:outline-none cursor-pointer">
-                            <option>Relevance</option>
-                            <option>Price: Low to High</option>
-                            <option>Newest First</option>
-                        </select>
-                    </div>
-                </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-extrabold text-[#64748B] uppercase tracking-wider block">City</label>
+          <input id="cityFilter" type="text" placeholder="Enter city"
+            class="w-full bg-white border border-gray-200 text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#4B4EFC] placeholder:text-gray-300">
+        </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
-                    
-                    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md transition-all relative group flex flex-col justify-between">
-                        <div class="w-full h-44 bg-gray-100 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=500&q=80" alt="Concert" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-red-500 text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Trending</span>
-                            <span class="absolute bottom-3 left-3 bg-[#4B4EFC] text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Featured</span>
-                            <button class="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-gray-600 shadow-sm"><i class="fa-regular fa-heart text-xs"></i></button>
-                        </div>
-                        <div class="p-4 flex-grow flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center space-x-1.5 text-[10px] font-bold text-[#4B4EFC] uppercase tracking-wider">
-                                    <span>Concerts</span>
-                                    <span class="text-gray-300">•</span>
-                                    <span class="text-amber-500"><i class="fa-solid fa-star mr-0.5"></i> 4.8</span>
-                                </div>
-                                <h3 class="text-sm font-bold text-[#0F172A] mt-1.5 line-clamp-1">Summer Music Festival 2026</h3>
-                                <div class="space-y-1 mt-2 text-[11px] text-gray-400 font-medium">
-                                    <p><i class="fa-regular fa-calendar text-[10px] mr-1.5 shrink-0"></i> 15/06/2026 at 18:00</p>
-                                    <p><i class="fa-solid fa-map-marker-alt text-[10px] mr-1.5 shrink-0"></i> New York, NY</p>
-                                    <p><i class="fa-solid fa-user-group text-[9px] mr-1.5 shrink-0"></i> 2500 seats available</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between mt-5 pt-3 border-t border-gray-50">
-                                <div class="flex flex-col"><span class="text-[9px] font-bold text-gray-400 uppercase">From</span><span class="text-base font-extrabold text-[#0F172A]">$89</span></div>
-                                <button class="bg-[#4B4EFC] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#3B3DDF] transition-all shadow-sm shadow-[#4B4EFC]/10">Book Now</button>
-                            </div>
-                        </div>
-                    </div>
+        <label class="flex items-center space-x-2.5 cursor-pointer pt-1 text-xs font-semibold text-[#475569]">
+          <input id="availableFilter" type="checkbox" class="w-3.5 h-3.5 border-gray-300 rounded accent-[#4B4EFC]">
+          <span>Only show available seats</span>
+        </label>
+      </aside>
 
-                    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md transition-all relative group flex flex-col justify-between">
-                        <div class="w-full h-44 bg-gray-100 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=500&q=80" alt="Sports" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-red-500 text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Trending</span>
-                            <span class="absolute bottom-3 left-3 bg-[#4B4EFC] text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Featured</span>
-                            <button class="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-gray-600 shadow-sm"><i class="fa-regular fa-heart text-xs"></i></button>
-                        </div>
-                        <div class="p-4 flex-grow flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center space-x-1.5 text-[10px] font-bold text-[#4B4EFC] uppercase tracking-wider">
-                                    <span>Sports</span>
-                                    <span class="text-gray-300">•</span>
-                                    <span class="text-amber-500"><i class="fa-solid fa-star mr-0.5"></i> 4.9</span>
-                                </div>
-                                <h3 class="text-sm font-bold text-[#0F172A] mt-1.5 line-clamp-1">Champions League Final</h3>
-                                <div class="space-y-1 mt-2 text-[11px] text-gray-400 font-medium">
-                                    <p><i class="fa-regular fa-calendar text-[10px] mr-1.5 shrink-0"></i> 28/05/2026 at 20:00</p>
-                                    <p><i class="fa-solid fa-map-marker-alt text-[10px] mr-1.5 shrink-0"></i> London, UK</p>
-                                    <p><i class="fa-solid fa-user-group text-[9px] mr-1.5 shrink-0"></i> 850 seats available</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between mt-5 pt-3 border-t border-gray-50">
-                                <div class="flex flex-col"><span class="text-[9px] font-bold text-gray-400 uppercase">From</span><span class="text-base font-extrabold text-[#0F172A]">$250</span></div>
-                                <button class="bg-[#4B4EFC] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#3B3DDF] transition-all shadow-sm shadow-[#4B4EFC]/10">Book Now</button>
-                            </div>
-                        </div>
-                    </div>
+      <div class="flex-grow w-full space-y-4">
 
-                    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md transition-all relative group flex flex-col justify-between">
-                        <div class="w-full h-44 bg-gray-100 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=500&q=80" alt="Gaming" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-red-500 text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Trending</span>
-                            <button class="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-gray-600 shadow-sm"><i class="fa-regular fa-heart text-xs"></i></button>
-                        </div>
-                        <div class="p-4 flex-grow flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center space-x-1.5 text-[10px] font-bold text-[#4B4EFC] uppercase tracking-wider">
-                                    <span>Gaming</span>
-                                    <span class="text-gray-300">•</span>
-                                    <span class="text-amber-500"><i class="fa-solid fa-star mr-0.5"></i> 4.7</span>
-                                </div>
-                                <h3 class="text-sm font-bold text-[#0F172A] mt-1.5 line-clamp-1">E-Sports Championship 2026</h3>
-                                <div class="space-y-1 mt-2 text-[11px] text-gray-400 font-medium">
-                                    <p><i class="fa-regular fa-calendar text-[10px] mr-1.5 shrink-0"></i> 20/07/2026 at 14:00</p>
-                                    <p><i class="fa-solid fa-map-marker-alt text-[10px] mr-1.5 shrink-0"></i> Los Angeles, CA</p>
-                                    <p><i class="fa-solid fa-user-group text-[9px] mr-1.5 shrink-0"></i> 1200 seats available</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between mt-5 pt-3 border-t border-gray-50">
-                                <div class="flex flex-col"><span class="text-[9px] font-bold text-gray-400 uppercase">From</span><span class="text-base font-extrabold text-[#0F172A]">$45</span></div>
-                                <button class="bg-[#4B4EFC] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#3B3DDF] transition-all shadow-sm shadow-[#4B4EFC]/10">Book Now</button>
-                            </div>
-                        </div>
-                    </div>
+        <div class="flex items-center justify-between text-xs font-semibold text-[#64748B] text-left w-full">
+          <span id="eventsCount">Loading events...</span>
 
-                    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md transition-all relative group flex flex-col justify-between">
-                        <div class="w-full h-44 bg-gray-100 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=500&q=80" alt="Tech" class="w-full h-full object-cover">
-                            <span class="absolute bottom-3 left-3 bg-[#4B4EFC] text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Featured</span>
-                            <button class="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-gray-600 shadow-sm"><i class="fa-regular fa-heart text-xs"></i></button>
-                        </div>
-                        <div class="p-4 flex-grow flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center space-x-1.5 text-[10px] font-bold text-[#4B4EFC] uppercase tracking-wider">
-                                    <span>Tech Conferences</span>
-                                    <span class="text-gray-300">•</span>
-                                    <span class="text-amber-500"><i class="fa-solid fa-star mr-0.5"></i> 4.9</span>
-                                </div>
-                                <h3 class="text-sm font-bold text-[#0F172A] mt-1.5 line-clamp-1">AI & Tech Summit 2026</h3>
-                                <div class="space-y-1 mt-2 text-[11px] text-gray-400 font-medium">
-                                    <p><i class="fa-regular fa-calendar text-[10px] mr-1.5 shrink-0"></i> 10/08/2026 at 09:00</p>
-                                    <p><i class="fa-solid fa-map-marker-alt text-[10px] mr-1.5 shrink-0"></i> San Francisco, CA</p>
-                                    <p><i class="fa-solid fa-user-group text-[9px] mr-1.5 shrink-0"></i> 450 seats available</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between mt-5 pt-3 border-t border-gray-50">
-                                <div class="flex flex-col"><span class="text-[9px] font-bold text-gray-400 uppercase">From</span><span class="text-base font-extrabold text-[#0F172A]">$199</span></div>
-                                <button class="bg-[#4B4EFC] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#3B3DDF] transition-all shadow-sm shadow-[#4B4EFC]/10">Book Now</button>
-                            </div>
-                        </div>
-                    </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-[11px]">Sort by:</span>
 
-                </div>
+            <select id="sortFilter" class="bg-transparent font-bold text-[#0F172A] focus:outline-none cursor-pointer">
+              <option value="relevance">Relevance</option>
+              <option value="price_low">Price: Low to High</option>
+              <option value="date_new">Newest First</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
+          <p class="text-sm text-slate-400">Loading events...</p>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <div id="Footer"></div>
+
+  <!-- Booking Modal -->
+  <div id="bookingModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4">
+
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative">
+
+      <div class="bg-[#4B4EFC] px-6 py-5 text-white flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-extrabold">Confirm Booking</h2>
+          <p class="text-xs text-indigo-100 mt-1">Complete your event booking details</p>
+        </div>
+
+        <button type="button" onclick="closeBookingModal()"
+          class="w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="bookingForm" class="p-6 space-y-2">
+
+        <input type="hidden" id="bookingEventId">
+        <input type="hidden" id="bookingPrice">
+
+        <div>
+          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">
+            Event
+          </label>
+          <input id="bookingEventTitle" type="text" readonly
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-600 font-semibold outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">
+              Full Name
+            </label>
+            <input id="bookingName" type="text" required
+              class="w-full px-2 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">
+              Phone
+            </label>
+            <input id="bookingPhone" type="text" required placeholder="03xxxxxxxx"
+              class="w-full px-2 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">
+            Email
+          </label>
+          <input id="bookingEmail" type="email" required
+            class="w-full px-2 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">
+              Tickets
+            </label>
+            <input id="bookingTickets" type="number" min="1" value="1" required oninput="calculateBookingTotal()"
+              class="w-full px-2 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">
+              Price / Ticket
+            </label>
+            <input id="bookingPriceDisplay" type="text" readonly
+              class="w-full px-2 py-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-600 font-semibold outline-none">
+          </div>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-2 flex justify-between items-center">
+          <div>
+            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">
+              Total Amount
+            </p>
+            <h3 id="bookingTotalAmount" class="text-xl font-extrabold text-[#0F172A] mt-1">
+              Rs. 0
+            </h3>
+          </div>
+
+          <div class="w-8 h-8 rounded-full bg-indigo-100 text-[#4B4EFC] flex items-center justify-center">
+            <i class="fa-solid fa-ticket text-xl"></i>
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeBookingModal()"
+            class="w-1/2 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition">
+            Cancel
+          </button>
+
+          <button id="confirmBookingBtn" type="submit"
+            class="w-1/2 py-3 rounded-xl bg-[#4B4EFC] text-white font-bold hover:bg-indigo-700 transition">
+            Confirm Booking
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+
+ <!-- Payment Modal -->
+<div id="paymentModal" class="hidden fixed inset-0 bg-black/70 z-[9999] overflow-y-auto p-4">
+
+  <div class="min-h-full flex items-center justify-center">
+
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden relative my-4">
+
+      <div class="bg-gradient-to-r from-[#4B4EFC] to-[#7C3AED] px-5 py-4 text-white relative overflow-hidden">
+        <div class="absolute -right-8 -top-8 w-28 h-28 bg-white/10 rounded-full"></div>
+        <div class="absolute -left-8 -bottom-10 w-24 h-24 bg-white/10 rounded-full"></div>
+
+        <div class="relative z-10 flex items-center justify-between">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-white/70 font-bold">
+              Secure Checkout
+            </p>
+            <h2 class="text-xl font-extrabold mt-1">
+              Payment Gateway
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            onclick="closePaymentModal()"
+            class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <div class="relative z-10 mt-4 bg-white/15 backdrop-blur rounded-2xl p-3 border border-white/20">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-[10px] text-white/70 font-semibold">
+                Amount to Pay
+              </p>
+              <h3 id="paymentAmountText" class="text-2xl font-black">
+                Rs. 0
+              </h3>
             </div>
 
+            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+              <i class="fa-solid fa-credit-card text-lg"></i>
+            </div>
+          </div>
         </div>
-    </main>
-    <div id="Footer"></div>
+      </div>
 
+      <div class="p-5 space-y-3">
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-500 mb-1.5">
+            Card Holder Name
+          </label>
+          <input
+            id="cardHolder"
+            type="text"
+            placeholder="M Kashan Malik"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-500 mb-1.5">
+            Card Number
+          </label>
+
+          <div class="relative">
+            <input
+              id="cardNumber"
+              type="text"
+              maxlength="19"
+              placeholder="4242 4242 4242 4242"
+              oninput="formatCardNumber(this)"
+              class="w-full px-4 py-2.5 pr-12 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+            <i class="fa-brands fa-cc-visa absolute right-4 top-3 text-2xl text-indigo-500"></i>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 mb-1.5">
+              Expiry
+            </label>
+            <input
+              id="expiry"
+              type="text"
+              maxlength="5"
+              placeholder="MM/YY"
+              oninput="formatExpiry(this)"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 mb-1.5">
+              CVV
+            </label>
+            <input
+              id="cvv"
+              type="password"
+              maxlength="3"
+              placeholder="123"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <i class="fa-solid fa-shield-halved text-sm"></i>
+          </div>
+
+          <p class="text-[10px] text-slate-500 font-medium leading-relaxed">
+            This is a dummy secure payment for demo purpose only.
+          </p>
+        </div>
+
+        <div class="flex gap-3 pt-1">
+          <button
+            onclick="closePaymentModal()"
+            type="button"
+            class="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50">
+            Cancel
+          </button>
+
+          <button
+            onclick="processPayment()"
+            type="button"
+            class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-[#4B4EFC] to-[#7C3AED] text-white font-bold hover:opacity-90 shadow-lg">
+            Pay Now
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="js/app.js"></script>
-    <script>
-         async function load(id, file) {
-        try {
-            const response = await fetch(file);
-            if (!response.ok) throw new Error("File nahi mili");
-            const data = await response.text();
-            document.getElementById(id).innerHTML = data;
-        } catch (error) {
-            console.error("Hero Load Error:", error);
-            // Agar ye error console mein aaye, toh file path check karein
-        }
-    }
-        load("navbar", "Components/navbar.html");
-        load("Footer", "Components/Footer.html");
-    </script>
+  <script src="../assets/js/user-api.js"></script>
 
+  <script>
+    let allEvents = [];
+
+    load("navbar", "Components/navbar.html").then(() => {
+      updateUserNavbar();
+      if (typeof setActiveNavbarLink === "function") {
+        setActiveNavbarLink();
+      }
+    });
+
+    load("Footer", "Components/Footer.html");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadEvents();
+
+      document.getElementById("searchInput").addEventListener("input", filterEvents);
+      document.getElementById("categoryFilter").addEventListener("change", filterEvents);
+
+      document.getElementById("priceFilter").addEventListener("input", () => {
+        document.getElementById("priceLabel").innerText =
+          "Rs. 0 - Rs. " + document.getElementById("priceFilter").value;
+        filterEvents();
+      });
+
+      document.querySelectorAll("input[name='event_type']").forEach((radio) => {
+        radio.addEventListener("change", filterEvents);
+      });
+
+      document.getElementById("dateFilter").addEventListener("change", filterEvents);
+      document.getElementById("cityFilter").addEventListener("input", filterEvents);
+      document.getElementById("availableFilter").addEventListener("change", filterEvents);
+      document.getElementById("sortFilter").addEventListener("change", filterEvents);
+
+      document.getElementById("bookingForm").addEventListener("submit", handleBookingSubmit);
+    });
+
+    async function loadEvents() {
+      try {
+        const response = await getEvents();
+
+        if (!response.status) {
+          document.getElementById("eventsGrid").innerHTML =
+            `<p class="text-red-500 text-sm">${response.message}</p>`;
+          return;
+        }
+
+        allEvents = response.data || [];
+
+        loadCategories(allEvents);
+        renderEvents(allEvents);
+
+        const params = new URLSearchParams(window.location.search);
+        const searchTerm = params.get("search");
+
+        if (searchTerm) {
+          document.getElementById("searchInput").value = searchTerm;
+          filterEvents();
+        }
+
+      } catch (error) {
+        console.log("Events Load Error:", error);
+        document.getElementById("eventsGrid").innerHTML =
+          `<p class="text-red-500 text-sm">Failed to load events</p>`;
+      }
+    }
+
+    function loadCategories(events) {
+      const categoryFilter = document.getElementById("categoryFilter");
+      categoryFilter.innerHTML = `<option value="All">All Categories</option>`;
+
+      const categories = [...new Set(events.map(event => event.category_name || "General"))];
+
+      categories.forEach((category) => {
+        categoryFilter.innerHTML += `
+          <option value="${category}">
+            ${category}
+          </option>
+        `;
+      });
+    }
+
+    function filterEvents() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const category = document.getElementById("categoryFilter").value;
+      const maxPrice = Number(document.getElementById("priceFilter").value);
+      const type = document.querySelector("input[name='event_type']:checked").value;
+      const date = document.getElementById("dateFilter").value;
+      const city = document.getElementById("cityFilter").value.toLowerCase();
+      const availableOnly = document.getElementById("availableFilter").checked;
+      const sort = document.getElementById("sortFilter").value;
+
+      let filtered = allEvents.filter((event) => {
+        const title = (event.title || "").toLowerCase();
+        const eventCategory = event.category_name || "General";
+        const location = (event.location || "").toLowerCase();
+        const price = Number(event.price || 0);
+        const availableTickets = Number(event.available_tickets || 0);
+
+        if (
+          search &&
+          !title.includes(search) &&
+          !eventCategory.toLowerCase().includes(search) &&
+          !location.includes(search)
+        ) return false;
+
+        if (category !== "All" && eventCategory !== category) return false;
+        if (price > maxPrice) return false;
+        if (type === "Free" && price !== 0) return false;
+        if (type === "Paid" && price === 0) return false;
+        if (date && event.event_date !== date) return false;
+        if (city && !location.includes(city)) return false;
+        if (availableOnly && availableTickets <= 0) return false;
+
+        return true;
+      });
+
+      if (sort === "price_low") {
+        filtered.sort((a, b) => Number(a.price) - Number(b.price));
+      }
+
+      if (sort === "date_new") {
+        filtered.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+      }
+
+      renderEvents(filtered);
+    }
+
+    function renderEvents(events) {
+      const grid = document.getElementById("eventsGrid");
+      const count = document.getElementById("eventsCount");
+
+      count.innerText = `${events.length} events found`;
+
+      if (events.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-20 text-slate-400 text-sm">
+            No events found
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = "";
+
+      events.forEach((event) => {
+        const image = event.image
+          ? `http://localhost:8000/${event.image}`
+          : "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=500&q=80";
+
+        const price = Number(event.price || 0);
+        const priceText = price === 0 ? "Free" : "Rs. " + price;
+
+        grid.innerHTML += `
+          <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all relative group flex flex-col justify-between">
+
+            <div class="w-full h-44 bg-gray-100 overflow-hidden relative">
+              <img src="${image}" alt="${event.title}" class="w-full h-full object-cover">
+
+              <span class="absolute bottom-3 left-3 bg-[#4B4EFC] text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">
+                ${event.category_name || "General"}
+              </span>
+            </div>
+
+            <div class="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <div class="flex items-center space-x-1.5 text-[10px] font-bold text-[#4B4EFC] uppercase tracking-wider">
+                  <span>${event.category_name || "General"}</span>
+                  <span class="text-gray-300">•</span>
+                  <span class="text-amber-500">
+                    <i class="fa-solid fa-star mr-0.5"></i> 4.8
+                  </span>
+                </div>
+
+                <h3 class="text-sm font-bold text-[#0F172A] mt-1.5 line-clamp-1">
+                  ${event.title}
+                </h3>
+
+                <div class="space-y-1 mt-2 text-[11px] text-gray-400 font-medium">
+                  <p>
+                    <i class="fa-regular fa-calendar text-[10px] mr-1.5"></i>
+                    ${event.event_date} at ${event.event_time}
+                  </p>
+
+                  <p>
+                    <i class="fa-solid fa-map-marker-alt text-[10px] mr-1.5"></i>
+                    ${event.location || "No location"}
+                  </p>
+
+                  <p>
+                    <i class="fa-solid fa-user-group text-[9px] mr-1.5"></i>
+                    ${event.available_tickets || 0} seats available
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between mt-5 pt-3 border-t border-gray-50">
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase">From</span>
+                  <span class="text-base font-extrabold text-[#0F172A]">${priceText}</span>
+                </div>
+
+                <button
+                  onclick="openBookingModal(${event.id})"
+                  class="bg-[#4B4EFC] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#3B3DDF]">
+                  Book Now
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function clearFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("categoryFilter").value = "All";
+      document.getElementById("priceFilter").value = "50000";
+      document.getElementById("priceLabel").innerText = "Rs. 0 - Rs. 50000";
+      document.querySelector("input[name='event_type'][value='All']").checked = true;
+      document.getElementById("dateFilter").value = "";
+      document.getElementById("cityFilter").value = "";
+      document.getElementById("availableFilter").checked = false;
+      document.getElementById("sortFilter").value = "relevance";
+
+      renderEvents(allEvents);
+    }
+
+    async function openBookingModal(eventId) {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!user) {
+        showToast("Please login first", "error");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const selectedEvent = allEvents.find(event => Number(event.id) === Number(eventId));
+
+      if (!selectedEvent) {
+        showToast("Event not found", "error");
+        return;
+      }
+
+      const price = Number(selectedEvent.price || 0);
+      let profile = user;
+
+      try {
+        const profileResponse = await getProfile();
+
+        if (profileResponse.status) {
+          profile = profileResponse.data;
+        }
+      } catch (error) {
+        console.log("Profile fetch error:", error);
+      }
+
+      document.getElementById("bookingEventId").value = selectedEvent.id;
+      document.getElementById("bookingPrice").value = price;
+
+      document.getElementById("bookingPriceDisplay").value =
+        price === 0 ? "Free" : "Rs. " + price;
+
+      document.getElementById("bookingEventTitle").value = selectedEvent.title || "";
+      document.getElementById("bookingName").value = profile.name || "";
+      document.getElementById("bookingEmail").value = profile.email || "";
+      document.getElementById("bookingPhone").value = profile.phone || "";
+      document.getElementById("bookingTickets").value = 1;
+
+      calculateBookingTotal();
+
+      document.getElementById("bookingModal").classList.remove("hidden");
+    }
+
+    function closeBookingModal() {
+      document.getElementById("bookingModal").classList.add("hidden");
+    }
+
+    function calculateBookingTotal() {
+      const price = Number(document.getElementById("bookingPrice").value || 0);
+      const tickets = Number(document.getElementById("bookingTickets").value || 1);
+
+      document.getElementById("bookingTotalAmount").innerText =
+        "Rs. " + (price * tickets);
+    }
+
+    async function handleBookingSubmit(e) {
+      e.preventDefault();
+
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!user) {
+        showToast("Please login first", "error");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const eventId = Number(document.getElementById("bookingEventId").value);
+      const tickets = Number(document.getElementById("bookingTickets").value);
+      const price = Number(document.getElementById("bookingPrice").value);
+      const totalAmount = price * tickets;
+
+      const bookingData = {
+        user_id: user.id,
+        event_id: eventId,
+        tickets: tickets,
+        total_amount: totalAmount
+      };
+
+      const btn = document.getElementById("confirmBookingBtn");
+      btn.innerText = "Creating...";
+      btn.disabled = true;
+
+      try {
+        const response = await createBooking(bookingData);
+
+        if (!response.status) {
+          showToast(response.message, "error");
+          btn.innerText = "Confirm Booking";
+          btn.disabled = false;
+          return;
+        }
+
+        window.pendingPayment = {
+          booking_id: response.data.booking_id,
+          event_id: eventId,
+          tickets: tickets,
+          amount: totalAmount
+        };
+
+        btn.innerText = "Confirm Booking";
+        btn.disabled = false;
+
+        openPaymentModal();
+
+      } catch (error) {
+        console.log("Booking Error:", error);
+        showToast("Booking request failed", "error");
+
+        btn.innerText = "Confirm Booking";
+        btn.disabled = false;
+      }
+    }
+
+    function closePaymentModal() {
+      document.getElementById("paymentModal").classList.add("hidden");
+    }
+
+    function openPaymentModal() {
+      document.getElementById("paymentAmountText").innerText =
+        "Rs. " + (window.pendingPayment?.amount || 0);
+
+      document.getElementById("paymentModal").classList.remove("hidden");
+    }
+
+    function formatCardNumber(input) {
+      input.value = input.value
+        .replace(/\D/g, "")
+        .replace(/(.{4})/g, "$1 ")
+        .trim();
+    }
+
+    function formatExpiry(input) {
+      input.value = input.value
+        .replace(/\D/g, "")
+        .replace(/^(\d{2})(\d)/, "$1/$2");
+    }
+
+    async function processPayment() {
+      const cardHolder = document.getElementById("cardHolder").value.trim();
+      const cardNumber = document.getElementById("cardNumber").value.trim();
+      const expiry = document.getElementById("expiry").value.trim();
+      const cvv = document.getElementById("cvv").value.trim();
+
+      if (!window.pendingPayment) {
+        showToast("Booking data not found", "error");
+        return;
+      }
+
+      if (!cardHolder || !cardNumber || !expiry || !cvv) {
+        showToast("Please fill payment details", "error");
+        return;
+      }
+
+      const paymentData = {
+        booking_id: window.pendingPayment.booking_id,
+        event_id: window.pendingPayment.event_id,
+        tickets: window.pendingPayment.tickets,
+        card_holder: cardHolder,
+        card_number: cardNumber,
+        payment_method: "Dummy Card",
+        amount: window.pendingPayment.amount
+      };
+
+      try {
+        const response = await createPayment(paymentData);
+
+        if (!response.status) {
+          showToast(response.message, "error");
+          return;
+        }
+
+        showToast(response.message);
+
+        closePaymentModal();
+        closeBookingModal();
+
+        document.getElementById("cardHolder").value = "";
+        document.getElementById("cardNumber").value = "";
+        document.getElementById("expiry").value = "";
+        document.getElementById("cvv").value = "";
+
+        loadEvents();
+
+      } catch (error) {
+        console.log("Payment Error:", error);
+        showToast("Payment request failed", "error");
+      }
+    }
+  </script>
 
 </body>
+
 </html>

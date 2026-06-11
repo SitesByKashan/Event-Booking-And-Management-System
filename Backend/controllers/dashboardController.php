@@ -70,3 +70,40 @@ function chartStats() {
         ]
     ]);
 }
+
+function userDashboardStats()
+{
+    global $conn;
+
+    $user_id = $_GET['user_id'] ?? '';
+
+    if ($user_id == '') {
+        echo json_encode([
+            "status" => false,
+            "message" => "User id is required"
+        ]);
+        return;
+    }
+
+    $sql = "SELECT
+                COUNT(*) AS total_bookings,
+                SUM(total_amount) AS total_spent
+            FROM bookings
+            WHERE user_id = :user_id
+            AND status = 'confirmed'";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+        ":user_id" => $user_id
+    ]);
+
+    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    echo json_encode([
+        "status" => true,
+        "data" => [
+            "total_bookings" => $stats['total_bookings'] ?? 0,
+            "total_spent" => $stats['total_spent'] ?? 0
+        ]
+    ]);
+}

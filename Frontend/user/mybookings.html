@@ -1,340 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EventHub - My Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #F8FAFC; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings | EventHub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #F8FAFC;
+    }
+  </style>
 </head>
+
 <body class="text-[#1E293B] antialiased min-h-screen flex flex-col justify-between">
 
-    <div id="navbar"></div>
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
-        
-        <div class="mb-8 text-left">
-            <h1 class="text-2xl font-bold text-[#0F172A] tracking-tight">My Dashboard</h1>
-            <p class="text-xs font-medium text-[#64748B] mt-1">Manage your bookings and discover new events</p>
-        </div>
+if (!loggedUser) {
+  window.location.href = "login.html";
+}
+</script>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 w-full">
-            <div class="bg-[#EFF2FE]/70 border border-[#4B4EFC]/10 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_8px_rgba(75,78,252,0.02)]">
-                <div>
-                    <span class="text-[9px] font-bold text-[#4B4EFC] bg-[#EFF2FE] px-2.5 py-0.5 rounded-md uppercase tracking-wider">Active</span>
-                    <h3 class="text-2xl font-bold text-[#0F172A] mt-2">2</h3>
-                    <p class="text-[11px] font-medium text-[#64748B] mt-0.5">Upcoming Events</p>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-white text-[#4B4EFC] flex items-center justify-center shadow-xs shrink-0"><i class="fa-solid fa-ticket text-sm"></i></div>
-            </div>
-            <div class="bg-[#EBF7F2]/70 border border-[#10B981]/10 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_8px_rgba(16,185,129,0.02)]">
-                <div>
-                    <span class="text-[9px] font-bold text-[#10B981] bg-[#EBF7F2] px-2.5 py-0.5 rounded-md uppercase tracking-wider">Total</span>
-                    <h3 class="text-2xl font-bold text-[#0F172A] mt-2">$518</h3>
-                    <p class="text-[11px] font-medium text-[#64748B] mt-0.5">Total Spent</p>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-white text-[#10B981] flex items-center justify-center shadow-xs shrink-0"><i class="fa-solid fa-wallet text-sm"></i></div>
-            </div>
-            <div class="bg-[#FAF0FA]/70 border border-[#D946EF]/10 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_8px_rgba(217,70,239,0.02)]">
-                <div>
-                    <span class="text-[9px] font-bold text-[#D946EF] bg-[#FAF0FA] px-2.5 py-0.5 rounded-md uppercase tracking-wider">Saved</span>
-                    <h3 class="text-2xl font-bold text-[#0F172A] mt-2">12</h3>
-                    <p class="text-[11px] font-medium text-[#64748B] mt-0.5">Wishlist Items</p>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-white text-[#D946EF] flex items-center justify-center shadow-xs shrink-0"><i class="fa-regular fa-heart text-sm"></i></div>
-            </div>
-            <div class="bg-[#FFFBEB]/70 border border-[#F59E0B]/10 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_8px_rgba(245,158,11,0.02)]">
-                <div>
-                    <span class="text-[9px] font-bold text-[#F59E0B] bg-[#FFFBEB] px-2.5 py-0.5 rounded-md uppercase tracking-wider">Points</span>
-                    <h3 class="text-2xl font-bold text-[#0F172A] mt-2">850</h3>
-                    <p class="text-[11px] font-medium text-[#64748B] mt-0.5">Reward Points</p>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-white text-[#F59E0B] flex items-center justify-center shadow-xs shrink-0"><i class="fa-solid fa-award text-sm"></i></div>
-            </div>
-        </div>
+<div id="navbar"></div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start w-full">
-            
-            <div class="lg:col-span-2 space-y-6">
-                
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] text-left">
-                    <h2 class="text-sm font-bold text-[#0F172A] mb-4 tracking-tight">My Bookings</h2>
-                    
-                    <div class="flex items-center space-x-2 border-b border-[#F1F5F9] pb-3 mb-5 text-[11px] font-bold">
-                        <button class="bg-[#EFF2FE] text-[#4B4EFC] px-4 py-1.5 rounded-lg">Upcoming <span class="ml-1 opacity-70">2</span></button>
-                        <button class="text-[#64748B] px-3 py-1.5 hover:text-[#0F172A] transition-colors">Past Events <span class="ml-1 opacity-50">5</span></button>
-                        <button class="text-[#64748B] px-3 py-1.5 hover:text-[#0F172A] transition-colors">Cancelled <span class="ml-1 opacity-50">1</span></button>
-                    </div>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
 
-                    <div class="space-y-4">
-                        <div class="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white hover:border-gray-200 transition-all">
-                            <div class="flex items-center space-x-4">
-                                <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=120&q=80" class="w-16 h-16 object-cover rounded-xl shrink-0 bg-gray-50">
-                                <div>
-                                    <h4 class="text-xs font-bold text-[#0F172A] tracking-tight">Summer Music Festival 2026</h4>
-                                    <p class="text-[10px] font-medium text-[#64748B] mt-1"><i class="fa-regular fa-calendar mr-1.5"></i> 15/06/2026 at 18:00</p>
-                                    <p class="text-[10px] font-medium text-gray-400 mt-0.5">Seats: <span class="font-bold text-gray-600">A5, A6</span> • Booking ID: <span class="font-mono text-[#4B4EFC] bg-blue-50 px-1.5 py-0.5 rounded font-bold">000C0001</span></p>
-                                </div>
-                            </div>
-                            <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 border-t sm:border-0 pt-2 sm:pt-0">
-                                <span class="text-xs font-bold text-[#0F172A] block">$178</span>
-                                <button class="mt-2 bg-[#4B4EFC] hover:bg-[#3B3DDF] text-white text-[10px] font-bold px-3.5 py-1.5 rounded-lg shadow-xs transition-all cursor-pointer">View Ticket</button>
-                            </div>
-                        </div>
+  <div class="mb-8 text-left">
+    <h1 class="text-2xl font-bold text-[#0F172A] tracking-tight">My Bookings</h1>
+    <p class="text-xs font-medium text-[#64748B] mt-1">View and manage your event bookings</p>
+  </div>
 
-                        <div class="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white hover:border-gray-200 transition-all">
-                            <div class="flex items-center space-x-4">
-                                <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=120&q=80" class="w-16 h-16 object-cover rounded-xl shrink-0 bg-gray-50">
-                                <div>
-                                    <h4 class="text-xs font-bold text-[#0F172A] tracking-tight">Champions League Final</h4>
-                                    <p class="text-[10px] font-medium text-[#64748B] mt-1"><i class="fa-regular fa-calendar mr-1.5"></i> 28/05/2026 at 20:00</p>
-                                    <p class="text-[10px] font-medium text-gray-400 mt-0.5">Seats: <span class="font-bold text-gray-600">B12</span> • Booking ID: <span class="font-mono text-[#4B4EFC] bg-blue-50 px-1.5 py-0.5 rounded font-bold">000C0002</span></p>
-                                </div>
-                            </div>
-                            <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 border-t sm:border-0 pt-2 sm:pt-0">
-                                <span class="text-xs font-bold text-[#0F172A] block">$250</span>
-                                <button class="mt-2 bg-[#4B4EFC] hover:bg-[#3B3DDF] text-white text-[10px] font-bold px-3.5 py-1.5 rounded-lg shadow-xs transition-all cursor-pointer">View Ticket</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
 
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] text-left">
-                    <h2 class="text-sm font-bold text-[#0F172A] mb-4 tracking-tight">Payment History</h2>
-                    <div class="divide-y divide-[#F1F5F9]">
-                        <div class="py-3.5 flex items-center justify-between text-xs font-semibold w-full">
-                            <div class="flex items-center space-x-3.5">
-                                <div class="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400"><i class="fa-solid fa-receipt text-xs"></i></div>
-                                <div>
-                                    <h5 class="text-[#1E293B] font-bold">Summer Music Festival 2026</h5>
-                                    <p class="text-[10px] font-medium text-gray-400 mt-0.5">10/05/2026 • Visa ****2314</p>
-                                </div>
-                            </div>
-                            <span class="text-[#0F172A] font-bold">$178</span>
-                        </div>
-                        <div class="py-3.5 flex items-center justify-between text-xs font-semibold w-full">
-                            <div class="flex items-center space-x-3.5">
-                                <div class="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400"><i class="fa-solid fa-receipt text-xs"></i></div>
-                                <div>
-                                    <h5 class="text-[#1E293B] font-bold">Champions League Final</h5>
-                                    <p class="text-[10px] font-medium text-gray-400 mt-0.5">08/05/2026 • MasterCard ****4421</p>
-                                </div>
-                            </div>
-                            <span class="text-[#0F172A] font-bold">$250</span>
-                        </div>
-                        <div class="py-3.5 flex items-center justify-between text-xs font-semibold w-full">
-                            <div class="flex items-center space-x-3.5">
-                                <div class="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400"><i class="fa-solid fa-receipt text-xs"></i></div>
-                                <div>
-                                    <h5 class="text-[#1E293B] font-bold">E-Sports Championship 2026</h5>
-                                    <p class="text-[10px] font-medium text-gray-400 mt-0.5">02/04/2026 • PayPal Account</p>
-                                </div>
-                            </div>
-                            <span class="text-[#0F172A] font-bold">$90</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="bg-[#EFF2FE]/70 border border-[#4B4EFC]/10 rounded-2xl p-5 flex items-center justify-between">
+      <div>
+        <span class="text-[9px] font-bold text-[#4B4EFC] bg-[#EFF2FE] px-2.5 py-0.5 rounded-md uppercase">Bookings</span>
+        <h3 id="totalBookings" class="text-2xl font-bold text-[#0F172A] mt-2">0</h3>
+        <p class="text-[11px] text-[#64748B]">Total Bookings</p>
+      </div>
+      <div class="w-10 h-10 rounded-xl bg-white text-[#4B4EFC] flex items-center justify-center">
+        <i class="fa-solid fa-ticket"></i>
+      </div>
+    </div>
 
-            <div class="w-full space-y-6">
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] text-left">
-                    <h2 class="text-xs font-bold text-[#0F172A] mb-3 tracking-tight">Quick Actions</h2>
-                    <div class="space-y-1.5 text-xs font-medium">
-                        <button class="w-full text-left p-2.5 rounded-lg border border-transparent hover:border-[#4B4EFC]/20 text-[#4B4EFC] bg-[#4B4EFC]/5 transition-all flex items-center cursor-pointer">
-                            <i class="fa-regular fa-compass mr-2.5 text-xs"></i> Browse Events
-                        </button>
-                        <button class="w-full text-left p-2.5 rounded-lg border border-transparent hover:border-gray-200 text-gray-600 hover:bg-gray-50 transition-all flex items-center cursor-pointer">
-                            <i class="fa-regular fa-heart mr-2.5 text-xs"></i> My Wishlist
-                        </button>
-                        <button class="w-full text-left p-2.5 rounded-lg border border-transparent hover:border-gray-200 text-gray-600 hover:bg-gray-50 transition-all flex items-center cursor-pointer">
-                            <i class="fa-regular fa-user mr-2.5 text-xs"></i> Profile Settings
-                        </button>
-                    </div>
-                </div>
+    <div class="bg-[#EBF7F2]/70 border border-[#10B981]/10 rounded-2xl p-5 flex items-center justify-between">
+      <div>
+        <span class="text-[9px] font-bold text-[#10B981] bg-[#EBF7F2] px-2.5 py-0.5 rounded-md uppercase">Spent</span>
+        <h3 id="totalSpent" class="text-2xl font-bold text-[#0F172A] mt-2">Rs. 0</h3>
+        <p class="text-[11px] text-[#64748B]">Total Amount</p>
+      </div>
+      <div class="w-10 h-10 rounded-xl bg-white text-[#10B981] flex items-center justify-center">
+        <i class="fa-solid fa-wallet"></i>
+      </div>
+    </div>
 
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] text-left">
-                    <div class="flex items-center justify-between mb-3 w-full">
-                        <h2 class="text-xs font-bold text-[#0F172A] tracking-tight">Notifications</h2>
-                        <a href="#" class="text-[10px] font-bold text-[#4B4EFC] hover:underline uppercase tracking-wider">View All</a>
-                    </div>
-                    <div class="space-y-2.5">
-                        <div class="p-3 bg-[#EFF2FE]/60 rounded-xl border border-blue-50/50">
-                            <p class="text-[11px] font-bold text-[#0F172A]"><i class="fa-regular fa-clock mr-1 text-[#4B4EFC]"></i> Event Reminder</p>
-                            <p class="text-[10px] text-gray-400 mt-0.5 leading-relaxed">Champions League Final starts in 2 days.</p>
-                        </div>
-                        <div class="p-3 bg-gray-50 rounded-xl">
-                            <p class="text-[11px] font-bold text-gray-700"><i class="fa-solid fa-bullhorn mr-1 text-gray-400"></i> New Event Alert</p>
-                            <p class="text-[10px] text-gray-400 mt-0.5 leading-relaxed">New concert matches added in your area.</p>
-                        </div>
-                    </div>
-                </div>
+    <div class="bg-[#FFFBEB]/70 border border-[#F59E0B]/10 rounded-2xl p-5 flex items-center justify-between">
+      <div>
+        <span class="text-[9px] font-bold text-[#F59E0B] bg-[#FFFBEB] px-2.5 py-0.5 rounded-md uppercase">Tickets</span>
+        <h3 id="totalTickets" class="text-2xl font-bold text-[#0F172A] mt-2">0</h3>
+        <p class="text-[11px] text-[#64748B]">Total Tickets</p>
+      </div>
+      <div class="w-10 h-10 rounded-xl bg-white text-[#F59E0B] flex items-center justify-center">
+        <i class="fa-solid fa-users"></i>
+      </div>
+    </div>
 
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] text-left">
-                    <div class="flex items-center space-x-2.5 w-full">
-                        <div class="w-8 h-8 rounded-lg bg-amber-400 text-white flex items-center justify-center shadow-xs shrink-0"><i class="fa-solid fa-trophy text-xs"></i></div>
-                        <div>
-                            <h4 class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Reward Points</h4>
-                            <h3 class="text-base font-bold text-gray-800">850 Points</h3>
-                        </div>
-                    </div>
-                    <p class="text-[10px] font-medium text-gray-400 mt-3 leading-relaxed">Earn points with every booking and redeem for premium event coupons!</p>
-                    <div class="w-full bg-gray-100 h-1 rounded-full mt-3 overflow-hidden">
-                        <div class="bg-amber-400 h-full w-[85%] rounded-full"></div>
-                    </div>
-                    <p class="text-[9px] font-semibold text-gray-400 mt-1.5 text-right">150 points until next reward tier</p>
-                </div>
+  </div>
 
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] text-left">
-                    <h2 class="text-xs font-bold text-[#0F172A] mb-3 tracking-tight">Recently Viewed</h2>
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-3 w-full">
-                            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=80&q=80" alt="Thumb" class="w-10 h-10 object-cover rounded-lg shrink-0 bg-gray-100">
-                            <div class="overflow-hidden">
-                                <h5 class="text-[11px] font-bold text-gray-800 truncate">Summer Music Festival 2026</h5>
-                                <p class="text-[9px] font-medium text-gray-400 mt-0.5">15/06/2026</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-3 w-full">
-                            <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=80&q=80" alt="Thumb" class="w-10 h-10 object-cover rounded-lg shrink-0 bg-gray-100">
-                            <div class="overflow-hidden">
-                                <h5 class="text-[11px] font-bold text-gray-800 truncate">Champions League Final</h5>
-                                <p class="text-[9px] font-medium text-gray-400 mt-0.5">28/05/2026</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-sm font-bold text-[#0F172A]">Booking History</h2>
 
-        </div>
+      <button onclick="loadUserBookings()" class="text-xs bg-[#4B4EFC] text-white px-4 py-2 rounded-xl font-bold">
+        Refresh
+      </button>
+    </div>
 
-        <div class="mt-10 text-left w-full">
-            <div class="flex items-center justify-between mb-4 w-full">
-                <h2 class="text-sm font-bold text-[#0F172A] tracking-tight">Recommended for You</h2>
-                <a href="#" class="text-xs font-bold text-[#4B4EFC] hover:underline">View All</a>
-            </div>
-            
-            <div class="space-y-6 w-full">
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02)] p-4 flex flex-col md:flex-row items-start gap-5 relative">
-                    <div class="w-full md:w-72 h-44 bg-gray-100 rounded-xl overflow-hidden shrink-0 relative">
-                        <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80" alt="Tech Summit" class="w-full h-full object-cover">
-                        <span class="absolute top-3 left-3 bg-[#EFF2FE] text-[#4B4EFC] text-[9px] font-extrabold px-2 py-0.5 rounded uppercase">Featured</span>
-                    </div>
-                    <div class="flex-grow flex flex-col justify-between h-44 py-1 w-full">
-                        <div>
-                            <div class="flex items-center justify-between text-[10px] font-bold text-[#64748B]">
-                                <span class="text-[#4B4EFC]">Tech Conferences</span>
-                                <span class="flex items-center"><i class="fa-solid fa-star text-amber-400 mr-0.5"></i> 4.9</span>
-                            </div>
-                            <h4 class="text-base font-bold text-[#0F172A] tracking-tight mt-1">AI & Tech Summit 2026</h4>
-                            <div class="text-[11px] font-medium text-[#64748B] mt-2 space-y-1">
-                                <p><i class="fa-regular fa-calendar mr-1.5 text-gray-400"></i> 10/08/2026 at 09:00</p>
-                                <p><i class="fa-solid fa-map-marker-alt mr-1.5 text-gray-400"></i> San Francisco, CA</p>
-                                <p class="text-gray-400 text-[10px] mt-1">⚡ 450 seats available</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div>
-                                <span class="text-[10px] text-gray-400 block font-medium">Price</span>
-                                <span class="text-base font-extrabold text-[#0F172A]">$199</span>
-                            </div>
-                            <button class="bg-[#4B4EFC] hover:bg-[#3B3DDF] text-white text-xs font-bold px-5 py-2 rounded-xl transition-all shadow-xs cursor-pointer">Book Now</button>
-                        </div>
-                    </div>
-                    <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"><i class="fa-regular fa-heart text-sm"></i></button>
-                </div>
+    <div id="bookingsContainer" class="space-y-4">
+      <p class="text-sm text-slate-400">Loading bookings...</p>
+    </div>
+  </div>
 
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02)] p-4 flex flex-col md:flex-row items-start gap-5 relative">
-                    <div class="w-full md:w-72 h-44 bg-gray-100 rounded-xl overflow-hidden shrink-0 relative">
-                        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=600&q=80" alt="Fashion Gala" class="w-full h-full object-cover">
-                        <span class="absolute top-3 left-3 bg-[#EFF2FE] text-[#4B4EFC] text-[9px] font-extrabold px-2 py-0.5 rounded uppercase">Featured</span>
-                    </div>
-                    <div class="flex-grow flex flex-col justify-between h-44 py-1 w-full">
-                        <div>
-                            <div class="flex items-center justify-between text-[10px] font-bold text-[#64748B]">
-                                <span class="text-[#4B4EFC]">Fashion Shows</span>
-                                <span class="flex items-center"><i class="fa-solid fa-star text-amber-400 mr-0.5"></i> 4.8</span>
-                            </div>
-                            <h4 class="text-base font-bold text-[#0F172A] tracking-tight mt-1">Fashion Week Gala</h4>
-                            <div class="text-[11px] font-medium text-[#64748B] mt-2 space-y-1">
-                                <p><i class="fa-regular fa-calendar mr-1.5 text-gray-400"></i> 05/09/2026 at 19:00</p>
-                                <p><i class="fa-solid fa-map-marker-alt mr-1.5 text-gray-400"></i> Paris, France</p>
-                                <p class="text-gray-400 text-[10px] mt-1">⚡ 200 seats available</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div>
-                                <span class="text-[10px] text-gray-400 block font-medium">Price</span>
-                                <span class="text-base font-extrabold text-[#0F172A]">$350</span>
-                            </div>
-                            <button class="bg-[#4B4EFC] hover:bg-[#3B3DDF] text-white text-xs font-bold px-5 py-2 rounded-xl transition-all shadow-xs cursor-pointer">Book Now</button>
-                        </div>
-                    </div>
-                    <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"><i class="fa-regular fa-heart text-sm"></i></button>
-                </div>
+</main>
 
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02)] p-4 flex flex-col md:flex-row items-start gap-5 relative">
-                    <div class="w-full md:w-72 h-44 bg-gray-100 rounded-xl overflow-hidden shrink-0 relative">
-                        <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=600&q=80" alt="Jazz Night" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-grow flex flex-col justify-between h-44 py-1 w-full">
-                        <div>
-                            <div class="flex items-center justify-between text-[10px] font-bold text-[#64748B]">
-                                <span class="text-[#4B4EFC]">Concerts</span>
-                                <span class="flex items-center"><i class="fa-solid fa-star text-amber-400 mr-0.5"></i> 4.6</span>
-                            </div>
-                            <h4 class="text-base font-bold text-[#0F172A] tracking-tight mt-1">Jazz Night Under The Stars</h4>
-                            <div class="text-[11px] font-medium text-[#64748B] mt-2 space-y-1">
-                                <p><i class="fa-regular fa-calendar mr-1.5 text-gray-400"></i> 30/06/2026 at 20:30</p>
-                                <p><i class="fa-solid fa-map-marker-alt mr-1.5 text-gray-400"></i> Chicago, IL</p>
-                                <p class="text-gray-400 text-[10px] mt-1">⚡ 320 seats available</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div>
-                                <span class="text-[10px] text-gray-400 block font-medium">Price</span>
-                                <span class="text-base font-extrabold text-[#0F172A]">$65</span>
-                            </div>
-                            <button class="bg-[#4B4EFC] hover:bg-[#3B3DDF] text-white text-xs font-bold px-5 py-2 rounded-xl transition-all shadow-xs cursor-pointer">Book Now</button>
-                        </div>
-                    </div>
-                    <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"><i class="fa-regular fa-heart text-sm"></i></button>
-                </div>
-            </div>
-        </div>
+<div id="Footer"></div>
 
-    </main>
-    <div id="Footer"></div>
+<script src="js/app.js"></script>
+<script src="../assets/js/user-api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-   <script src="js/app.js"></script>
+<script>
+load("navbar", "Components/navbar.html").then(() => {
+  updateUserNavbar();
+});
 
-   <script>
-    async function load(id, file) {
-        try {
-            const response = await fetch(file);
-            if (!response.ok) throw new Error("File nahi mili");
-            const data = await response.text();
-            document.getElementById(id).innerHTML = data;
-        } catch (error) {
-            console.error("Hero Load Error:", error);
-            // Agar ye error console mein aaye, toh file path check karein
-        }
+load("Footer", "Components/Footer.html");
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadUserBookings();
+});
+
+async function loadUserBookings() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const container = document.getElementById("bookingsContainer");
+
+  container.innerHTML = `<p class="text-sm text-slate-400">Loading bookings...</p>`;
+
+  try {
+    const response = await getUserBookings(user.id);
+
+    if (!response.status) {
+      container.innerHTML = `<p class="text-sm text-red-500">${response.message}</p>`;
+      return;
     }
 
-       
+    const bookings = response.data || [];
 
-    load("navbar", "Components/navbar.html");
-        load("hero-section", "Components/hero-section.html");
-        load("events-card-grid", "Components/events-card-grid.html");
-        load("Footer", "Components/Footer.html");
-</script> 
+    renderBookings(bookings);
 
-  
+  } catch (error) {
+    console.log("Bookings Error:", error);
+    container.innerHTML = `<p class="text-sm text-red-500">Failed to load bookings</p>`;
+  }
+}
+
+function renderBookings(bookings) {
+  const container = document.getElementById("bookingsContainer");
+
+  let totalSpent = 0;
+  let totalTickets = 0;
+
+  bookings.forEach(booking => {
+    totalSpent += Number(booking.total_amount || 0);
+    totalTickets += Number(booking.tickets || 0);
+  });
+
+  document.getElementById("totalBookings").innerText = bookings.length;
+  document.getElementById("totalSpent").innerText = "Rs. " + totalSpent;
+  document.getElementById("totalTickets").innerText = totalTickets;
+
+  if (bookings.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-16 text-slate-400 font-semibold">
+        No bookings found
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  bookings.forEach(booking => {
+    const statusClass =
+      booking.status === "confirmed"
+        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+        : "bg-red-50 text-red-600 border-red-100";
+
+    container.innerHTML += `
+      <div class="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white hover:border-gray-200 transition-all">
+
+        <div class="flex items-center space-x-4">
+          <div class="w-16 h-16 rounded-xl bg-[#EFF2FE] text-[#4B4EFC] flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-ticket text-xl"></i>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-[#0F172A]">
+              ${booking.event_title || "Event"}
+            </h4>
+
+            <p class="text-[11px] font-medium text-[#64748B] mt-1">
+              <i class="fa-regular fa-calendar mr-1.5"></i>
+              ${booking.event_date || ""} at ${booking.event_time || ""}
+            </p>
+
+            <p class="text-[11px] font-medium text-gray-400 mt-1">
+              <i class="fa-solid fa-location-dot mr-1.5"></i>
+              ${booking.location || "No location"}
+            </p>
+
+            <p class="text-[11px] font-medium text-gray-400 mt-1">
+              Tickets:
+              <span class="font-bold text-gray-600">${booking.tickets}</span>
+              • Booking ID:
+              <span class="font-mono text-[#4B4EFC] bg-blue-50 px-1.5 py-0.5 rounded font-bold">
+                BK-${booking.id}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 border-t sm:border-0 pt-3 sm:pt-0">
+          <span class="text-sm font-bold text-[#0F172A]">
+            Rs. ${booking.total_amount}
+          </span>
+
+          <span class="mt-2 px-3 py-1 text-[10px] font-bold rounded-full border ${statusClass}">
+            ${booking.status}
+          </span>
+        </div>
+
+      </div>
+    `;
+  });
+}
+</script>
 
 </body>
 </html>

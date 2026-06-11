@@ -1,165 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EventHub - Discover Amazing Events</title>
-    <!-- Tailwind CSS Script -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Google Fonts: Inter (Figma Global Typography) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Framework Vector Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventHub - Discover Amazing Events</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
+
 <body class="bg-[#F8FAFC] text-[#1E293B] antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- 🌐 NAVBAR INTERFACE CONTAINER -->
-    <div id="navbar"></div>
+<div id="navbar"></div>
+<div id="hero-section"></div>
 
-    <!-- ⚡ HERO MATRIX BLOCK CONTAINER -->
-    <div id="hero-section"></div>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full space-y-16">
 
-    <!-- 📦 FIGMA CENTRAL CANVAS WIREFRAME -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full space-y-16">
-        
-        <!-- 🗂️ BROWSE BY CATEGORY SECTION -->
-        <section class="space-y-5">
-            <h3 class="text-xs font-bold text-[#1E293B] tracking-wider uppercase text-left">Browse By Category</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
-                <!-- Music Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-music text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Music</span>
-                </button>
-                <!-- Sports Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-trophy text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Sports</span>
-                </button>
-                <!-- Parties Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-champagne-glasses text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Parties</span>
-                </button>
-                <!-- Art Shows Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-palette text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Art Shows</span>
-                </button>
-                <!-- Workshops Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-laptop-code text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Workshops</span>
-                </button>
-                <!-- Tech Talks Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-network-wired text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Tech Talks</span>
-                </button>
-                <!-- Comedy Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-face-laugh-beam text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Comedy</span>
-                </button>
-                <!-- Food Expo Card -->
-                <button class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
-                    <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all"><i class="fa-solid fa-utensils text-base"></i></div>
-                    <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">Food Expo</span>
-                </button>
-            </div>
-        </section>
+  <section class="space-y-5">
+    <h3 class="text-xs font-bold text-[#1E293B] tracking-wider uppercase text-left">
+      Browse By Category
+    </h3>
 
-        <!-- 🎴 FEATURED LIVE EVENTS FEED GRID -->
-        <section class="space-y-6">
-            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
-                <div class="space-y-0.5 text-left">
-                    <h3 class="text-lg font-bold text-[#1E293B] tracking-tight">Featured Live Events</h3>
-                    <p class="text-gray-400 text-xs font-medium">Handpicked stellar live experiences happening right now</p>
-                </div>
-                <button class="text-xs font-bold text-[#5C7CFA] hover:text-[#4C6EF5] transition-colors flex items-center space-x-1 cursor-pointer group">
-                    <span>View All</span> <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
-                </button>
-            </div>
-            
-            <!-- CENTRAL CARD INJECTION CONSOLE GRID CONTAINER -->
-            <div id="events-card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Appended Javascript components map directly inside this segment -->
-            </div>
-        </section>
+    <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
+      <p class="text-sm text-slate-400">Loading categories...</p>
+    </div>
+  </section>
 
-        <!-- 👥 POPULAR ORGANIZERS COMPONENT GRID -->
-        <section class="space-y-5 bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
-            <h3 class="text-xs font-bold text-gray-400 tracking-wider uppercase text-left">Popular Organizers</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <!-- Org 1 -->
-                <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col justify-between items-center text-center space-y-4">
-                    <div class="flex items-center space-x-4 w-full text-left">
-                        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=120" alt="" class="w-11 h-11 rounded-lg object-cover">
-                        <div>
-                            <h4 class="text-xs font-bold text-[#1E293B]">Creablers Productions</h4>
-                            <p class="text-[10px] font-medium text-gray-400">48 Active Events</p>
-                        </div>
-                    </div>
-                    <button class="w-full py-2 bg-slate-50 hover:bg-[#EEF2FF] hover:text-[#5C7CFA] text-gray-500 font-bold text-[11px] rounded-lg border border-gray-100 transition-all cursor-pointer">View Profile</button>
-                </div>
-                <!-- Org 2 -->
-                <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col justify-between items-center text-center space-y-4">
-                    <div class="flex items-center space-x-4 w-full text-left">
-                        <img src="https://images.unsplash.com/photo-1486591978090-58e619d37fe7?w=120" alt="" class="w-11 h-11 rounded-lg object-cover">
-                        <div>
-                            <h4 class="text-xs font-bold text-[#1E293B]">Arts Council Pakistan</h4>
-                            <p class="text-[10px] font-medium text-gray-400">112 Active Events</p>
-                        </div>
-                    </div>
-                    <button class="w-full py-2 bg-slate-50 hover:bg-[#EEF2FF] hover:text-[#5C7CFA] text-gray-500 font-bold text-[11px] rounded-lg border border-gray-100 transition-all cursor-pointer">View Profile</button>
-                </div>
-                <!-- Org 3 -->
-                <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col justify-between items-center text-center space-y-4">
-                    <div class="flex items-center space-x-4 w-full text-left">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=120" alt="" class="w-11 h-11 rounded-lg object-cover">
-                        <div>
-                            <h4 class="text-xs font-bold text-[#1E293B]">Tech Alliance Asia</h4>
-                            <p class="text-[10px] font-medium text-gray-400">29 Active Events</p>
-                        </div>
-                    </div>
-                    <button class="w-full py-2 bg-slate-50 hover:bg-[#EEF2FF] hover:text-[#5C7CFA] text-gray-500 font-bold text-[11px] rounded-lg border border-gray-100 transition-all cursor-pointer">View Profile</button>
-                </div>
-            </div>
-        </section>
-    </main>
+  <section class="space-y-6">
+    <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+      <div class="space-y-0.5 text-left">
+        <h3 class="text-lg font-bold text-[#1E293B] tracking-tight">
+          Featured Live Events
+        </h3>
+        <p id="eventsSubText" class="text-gray-400 text-xs font-medium">
+          Handpicked stellar live experiences happening right now
+        </p>
+      </div>
 
+      <a href="events.html" class="text-xs font-bold text-[#5C7CFA] hover:text-[#4C6EF5] flex items-center space-x-1">
+        <span>View All</span>
+        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      </a>
+    </div>
 
+    <div id="events-card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <p class="text-sm text-slate-400">Loading events...</p>
+    </div>
+  </section>
 
+  <section class="space-y-5 bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+    <h3 class="text-xs font-bold text-gray-400 tracking-wider uppercase text-left">
+      Popular Organizers
+    </h3>
 
-<div id="Footer"> </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col justify-between items-center text-center space-y-4">
+        <div class="flex items-center space-x-4 w-full text-left">
+          <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=120" class="w-11 h-11 rounded-lg object-cover">
+          <div>
+            <h4 class="text-xs font-bold text-[#1E293B]">EventHub Organizer</h4>
+            <p class="text-[10px] font-medium text-gray-400">Active Events</p>
+          </div>
+        </div>
+        <button class="w-full py-2 bg-slate-50 hover:bg-[#EEF2FF] hover:text-[#5C7CFA] text-gray-500 font-bold text-[11px] rounded-lg border border-gray-100">
+          View Profile
+        </button>
+      </div>
 
+      <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col justify-between items-center text-center space-y-4">
+        <div class="flex items-center space-x-4 w-full text-left">
+          <img src="https://images.unsplash.com/photo-1486591978090-58e619d37fe7?w=120" class="w-11 h-11 rounded-lg object-cover">
+          <div>
+            <h4 class="text-xs font-bold text-[#1E293B]">Arts Council Pakistan</h4>
+            <p class="text-[10px] font-medium text-gray-400">Popular Organizer</p>
+          </div>
+        </div>
+        <button class="w-full py-2 bg-slate-50 hover:bg-[#EEF2FF] hover:text-[#5C7CFA] text-gray-500 font-bold text-[11px] rounded-lg border border-gray-100">
+          View Profile
+        </button>
+      </div>
 
-    <script src="js/app.js"></script>
+      <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col justify-between items-center text-center space-y-4">
+        <div class="flex items-center space-x-4 w-full text-left">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=120" class="w-11 h-11 rounded-lg object-cover">
+          <div>
+            <h4 class="text-xs font-bold text-[#1E293B]">Tech Alliance Asia</h4>
+            <p class="text-[10px] font-medium text-gray-400">Tech Events</p>
+          </div>
+        </div>
+        <button class="w-full py-2 bg-slate-50 hover:bg-[#EEF2FF] hover:text-[#5C7CFA] text-gray-500 font-bold text-[11px] rounded-lg border border-gray-100">
+          View Profile
+        </button>
+      </div>
+    </div>
+  </section>
 
-   <script>
-    async function load(id, file) {
-        try {
-            const response = await fetch(file);
-            if (!response.ok) throw new Error("File nahi mili");
-            const data = await response.text();
-            document.getElementById(id).innerHTML = data;
-        } catch (error) {
-            console.error("Hero Load Error:", error);
-            // Agar ye error console mein aaye, toh file path check karein
-        }
+</main>
+
+<div id="Footer"></div>
+
+<script src="js/app.js"></script>
+<script src="../assets/js/user-api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+let homeEvents = [];
+
+load("navbar", "Components/navbar.html").then(() => {
+  updateUserNavbar();
+  setActiveNavbarLink();
+});
+
+load("hero-section", "Components/hero-section.html").then(() => {
+  setupHomeHeroSearch();
+});
+
+load("Footer", "Components/Footer.html");
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadHomeCategories();
+  loadFeaturedEvents();
+});
+
+async function loadHomeCategories() {
+  const grid = document.getElementById("categoryGrid");
+
+  try {
+    const response = await getCategories();
+
+    if (!response.status) {
+      grid.innerHTML = `<p class="text-red-500 text-sm">${response.message}</p>`;
+      return;
     }
 
-       
+    const icons = [
+      "fa-music",
+      "fa-trophy",
+      "fa-champagne-glasses",
+      "fa-palette",
+      "fa-laptop-code",
+      "fa-network-wired",
+      "fa-face-laugh-beam",
+      "fa-utensils"
+    ];
 
-    load("navbar", "Components/navbar.html");
-        load("hero-section", "Components/hero-section.html");
-        load("events-card-grid", "Components/events-card-grid.html");
-        load("Footer", "Components/Footer.html");
+    grid.innerHTML = "";
+
+    response.data.forEach((category, index) => {
+      grid.innerHTML += `
+        <button
+          onclick="filterHomeEvents('${category.name}')"
+          class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
+
+          <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all">
+            <i class="fa-solid ${icons[index % icons.length]} text-base"></i>
+          </div>
+
+          <span class="text-xs font-semibold text-gray-500 group-hover:text-[#1E293B]">
+            ${category.name}
+          </span>
+        </button>
+      `;
+    });
+
+  } catch (error) {
+    grid.innerHTML = `<p class="text-red-500 text-sm">Failed to load categories</p>`;
+  }
+}
+
+async function loadFeaturedEvents() {
+  const grid = document.getElementById("events-card-grid");
+
+  try {
+    const response = await getEvents();
+
+    if (!response.status) {
+      grid.innerHTML = `<p class="text-red-500 text-sm">${response.message}</p>`;
+      return;
+    }
+
+    homeEvents = response.data || [];
+    renderHomeEvents(homeEvents.slice(0, 6));
+
+  } catch (error) {
+    console.log("Home Events Error:", error);
+    grid.innerHTML = `<p class="text-red-500 text-sm">Failed to load events</p>`;
+  }
+}
+
+function renderHomeEvents(events) {
+  const grid = document.getElementById("events-card-grid");
+  const subText = document.getElementById("eventsSubText");
+
+  subText.innerText = `${events.length} event${events.length === 1 ? "" : "s"} found`;
+
+  if (events.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full py-16 text-center text-slate-400 font-semibold">
+        No events found
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  events.forEach(event => {
+    const image = event.image
+      ? `http://localhost:8000/${event.image}`
+      : "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600";
+
+    const price = Number(event.price || 0);
+    const priceText = price === 0 ? "Free" : "Rs. " + price;
+
+    grid.innerHTML += `
+      <div class="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between text-left group hover:shadow-lg transition-all duration-300 relative w-full">
+
+        <div class="relative w-full h-44 bg-slate-50 overflow-hidden">
+          <img src="${image}" class="w-full h-full object-cover">
+
+          <div class="absolute bottom-3 left-3 bg-[#5C7CFA] text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase">
+            ${event.category_name || "General"}
+          </div>
+        </div>
+
+        <div class="p-4 space-y-3">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[10px] font-bold text-[#5C7CFA] uppercase">
+                ${event.category_name || "General"}
+              </span>
+              <span class="text-gray-300 text-[10px]">•</span>
+              <span class="text-amber-500 text-[11px] font-bold">
+                <i class="fa-solid fa-star text-[9px]"></i> 4.8
+              </span>
+            </div>
+
+            <h3 class="text-sm font-bold text-[#0F172A] mt-1">
+              ${event.title}
+            </h3>
+
+            <div class="space-y-1.5 text-[11px] font-medium text-gray-400 pt-2">
+              <div>
+                <i class="fa-regular fa-calendar w-4"></i>
+                ${event.event_date} at ${event.event_time}
+              </div>
+
+              <div>
+                <i class="fa-solid fa-location-dot w-4"></i>
+                ${event.location || "No location"}
+              </div>
+
+              <div>
+                <i class="fa-solid fa-user-group w-4"></i>
+                ${event.available_tickets || 0} seats available
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+            <div>
+              <span class="text-[9px] font-bold uppercase text-gray-400">From</span>
+              <p class="text-sm font-extrabold text-[#0F172A]">${priceText}</p>
+            </div>
+
+            <button
+              onclick="window.location.href='events.html'"
+              class="bg-[#5C7CFA] hover:bg-[#4C6EF5] text-white text-xs font-bold px-4 py-2 rounded-lg">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function setupHomeHeroSearch() {
+  const searchInput = document.getElementById("globalSearch");
+  const searchBtn = document.getElementById("heroSearchBtn");
+
+  if (!searchInput || !searchBtn) return;
+
+  searchBtn.addEventListener("click", () => {
+    filterHomeEvents(searchInput.value);
+  });
+
+  searchInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      filterHomeEvents(searchInput.value);
+    }
+  });
+}
+
+function searchCategory(category) {
+  filterHomeEvents(category);
+}
+
+function filterHomeEvents(keyword) {
+  keyword = String(keyword || "").trim().toLowerCase();
+
+  if (!keyword) {
+    renderHomeEvents(homeEvents.slice(0, 6));
+    return;
+  }
+
+  const filtered = homeEvents.filter(event => {
+    return (
+      (event.title || "").toLowerCase().includes(keyword) ||
+      (event.category_name || "").toLowerCase().includes(keyword) ||
+      (event.location || "").toLowerCase().includes(keyword)
+    );
+  });
+
+  renderHomeEvents(filtered);
+}
 </script>
+
 </body>
 </html>

@@ -6,6 +6,7 @@ require_once __DIR__ . "/../controllers/bookingController.php";
 require_once __DIR__ . "/../controllers/categoryController.php";
 require_once __DIR__ . "/../controllers/dashboardController.php";
 require_once __DIR__ . "/../controllers/userController.php";
+require_once __DIR__ . "/../controllers/paymentController.php";
 
 require_once __DIR__ . "/../middleware/authMiddleware.php";
 require_once __DIR__ . "/../middleware/adminMiddleware.php";
@@ -23,8 +24,13 @@ switch ($action) {
         break;
 
     case 'add_event':
-        // adminMiddleware();
+        adminMiddleware();
         addEvent();
+        break;
+
+    case 'user_dashboard_stats':
+        authMiddleware();
+        userDashboardStats();
         break;
 
     case 'get_events':
@@ -32,47 +38,47 @@ switch ($action) {
         break;
 
     case 'update_event':
-        // adminMiddleware();
+        adminMiddleware();
         updateEvent();
         break;
 
     case 'delete_event':
-        // adminMiddleware();
+        adminMiddleware();
         deleteEvent();
         break;
 
     case 'upload_event_image':
-        // adminMiddleware();
+        adminMiddleware();
         uploadEventImage();
         break;
 
     case 'create_booking':
-        // authMiddleware();
+        authMiddleware();
         createBooking();
         break;
 
     case 'get_bookings':
-        // adminMiddleware();
+        adminMiddleware();
         getBookings();
         break;
 
     case 'get_user_bookings':
-        // authMiddleware();
+        authMiddleware();
         getUserBookings();
         break;
 
     case 'cancel_booking':
-        // authMiddleware();
+        authMiddleware();
         cancelBooking();
         break;
 
     case 'get_users':
-        // adminMiddleware();
+        adminMiddleware();
         getUsers();
         break;
 
     case 'add_category':
-        // adminMiddleware();
+        adminMiddleware();
         addCategory();
         break;
 
@@ -81,22 +87,22 @@ switch ($action) {
         break;
 
     case 'update_category':
-        // adminMiddleware();
+        adminMiddleware();
         updateCategory();
         break;
 
     case 'delete_category':
-        // adminMiddleware();
+        adminMiddleware();
         deleteCategory();
         break;
 
     case 'dashboard_stats':
-        // adminMiddleware();
+        adminMiddleware();
         dashboardStats();
         break;
 
     case 'chart_stats':
-        // adminMiddleware();
+        adminMiddleware();
         chartStats();
         break;
 
@@ -111,6 +117,12 @@ switch ($action) {
     case 'update_password':
         updatePassword();
         break;
+
+    case 'create_payment':
+        authMiddleware();
+        createPayment();
+        break;
+
     default:
         echo json_encode([
             "status" => false,
