@@ -61,13 +61,22 @@
 
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-2">Password</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            required
-            minlength="6"
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="relative">
+            <input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              required
+              minlength="6"
+              class="w-full px-4 py-3 pr-12 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button
+              type="button"
+              onclick="togglePassword('password', this)"
+              class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-600"
+              aria-label="Toggle password visibility">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
         </div>
 
         <div class="flex items-start gap-2 pt-2">
@@ -121,6 +130,18 @@
 load("navbar", "Components/navbar.html");
 load("Footer", "Components/Footer.html");
 
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon = btn.querySelector("i");
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.replace("fa-eye", "fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.replace("fa-eye-slash", "fa-eye");
+  }
+}
+
 document.getElementById("signupForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
@@ -138,9 +159,9 @@ document.getElementById("signupForm").addEventListener("submit", async function(
     return;
   }
 
-  showToast("Account created successfully. Please login.");
+  showToast(response.message);
 
-  window.location.href = "login.html";
+  window.location.href = "verify.html?email=" + encodeURIComponent(email);
 });
 </script>
 
