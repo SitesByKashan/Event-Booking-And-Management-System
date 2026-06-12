@@ -4,6 +4,7 @@ require_once __DIR__ . "/../config/db.php";
 require_once __DIR__ . "/../models/User.php";
 require_once __DIR__ . "/../models/Event.php";
 require_once __DIR__ . "/../models/Booking.php";
+require_once __DIR__ . "/../models/Notification.php";
 
 function createBooking()
 {
@@ -114,6 +115,19 @@ function cancelBooking()
 
     $bookingModel = new Booking($conn);
     $bookingModel->cancel($booking_id);
+
+    startSessionSafe();
+    $user_id = $_SESSION["user_id"] ?? null;
+
+    if ($user_id) {
+        $userModel = new User($conn);
+        (new Notification($conn))->createAndEmail(
+            $userModel->findById($user_id),
+            "Booking cancelled",
+            "Your booking BK-" . $booking_id . " has been cancelled successfully.",
+            "booking"
+        );
+    }
 
     echo json_encode([
         "status" => true,

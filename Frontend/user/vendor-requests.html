@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor Desk | EventHub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; background-color: #F8FAFC; }
+    @keyframes vendorFloat3d {
+      0%, 100% { transform: translate3d(0, 0, 0) rotateY(-16deg) rotateX(10deg); }
+      50% { transform: translate3d(0, -10px, 24px) rotateY(8deg) rotateX(16deg); }
+    }
+    .vendor-hero {
+      perspective: 900px;
+      transform-style: preserve-3d;
+    }
+    .vendor-hero-card {
+      animation: vendorFloat3d 5.5s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
+    .vendor-card {
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .vendor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 55px rgba(15, 23, 42, 0.10);
+      border-color: rgba(75, 78, 252, 0.22);
+    }
+    .text-safe {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .quote-message {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body class="text-[#1E293B] antialiased min-h-screen flex flex-col justify-between">
+
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
+
+if (!loggedUser) {
+  window.location.href = "login.html";
+}
+</script>
+
+<div id="navbar"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow space-y-8">
+  <section class="vendor-hero bg-[#0F172A] text-white rounded-3xl p-8 border border-slate-800 relative overflow-hidden">
+    <div class="vendor-hero-card hidden lg:block absolute right-28 top-8 w-52 rounded-3xl bg-white/10 border border-white/10 p-5 shadow-2xl">
+      <p class="text-[10px] font-black uppercase tracking-widest text-indigo-200">AI Quote</p>
+      <h3 class="text-2xl font-black mt-1">Smart Match</h3>
+      <p class="text-xs text-slate-300 mt-2">Budget, city and requirements ke mutabiq offer craft karein.</p>
+    </div>
+    <div class="vendor-hero-card hidden lg:block absolute right-8 bottom-6 w-36 rounded-2xl bg-[#4B4EFC] p-4 shadow-2xl" style="animation-delay:1s">
+      <p class="text-[10px] uppercase tracking-widest text-indigo-100 font-black">Live</p>
+      <p class="text-sm font-extrabold mt-1">Quotes + Chat</p>
+    </div>
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 relative z-10">
+      <div>
+        <p class="text-[10px] uppercase tracking-widest text-indigo-200 font-bold">Vendor Desk</p>
+        <h1 class="text-3xl font-black mt-2">Quote customer event requests</h1>
+        <p class="text-sm text-slate-300 mt-2">Open requests dekhein, quotation bhejein, aur accepted quotes par customer se chat karein.</p>
+      </div>
+      <a href="profile-settings.html" class="bg-white text-[#0F172A] px-5 py-3 rounded-xl text-sm font-bold">
+        Manage Profile
+      </a>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <button type="button" onclick="openAiWithPrompt('Help me write a professional vendor quote for a wedding request')" class="vendor-card text-left bg-white border border-slate-200 rounded-2xl p-5">
+      <div class="w-10 h-10 rounded-xl bg-indigo-50 text-[#4B4EFC] flex items-center justify-center">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </div>
+      <h3 class="text-sm font-extrabold text-[#0F172A] mt-3">AI Quote Coach</h3>
+      <p class="text-xs text-slate-400 mt-1">Services ko professional quotation wording mein convert karein.</p>
+    </button>
+    <button type="button" onclick="openAiWithPrompt('Calculate a fair vendor quote with catering decor photography and sound')" class="vendor-card text-left bg-white border border-slate-200 rounded-2xl p-5">
+      <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+        <i class="fa-solid fa-calculator"></i>
+      </div>
+      <h3 class="text-sm font-extrabold text-[#0F172A] mt-3">AI Price Split</h3>
+      <p class="text-xs text-slate-400 mt-1">Venue, food, decor aur media ka budget breakup generate karein.</p>
+    </button>
+    <button type="button" onclick="openAiWithPrompt('Explain quote accepted messenger and notification workflow')" class="vendor-card text-left bg-white border border-slate-200 rounded-2xl p-5">
+      <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+        <i class="fa-solid fa-bell"></i>
+      </div>
+      <h3 class="text-sm font-extrabold text-[#0F172A] mt-3">Workflow Help</h3>
+      <p class="text-xs text-slate-400 mt-1">Quote, accept, chat, notification aur email flow explain karein.</p>
+    </button>
+  </section>
+
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h2 class="text-lg font-extrabold text-[#0F172A]">Open Customer Requests</h2>
+          <p class="text-xs text-slate-400 mt-1">Quote sirf relevant requirements par bhejein.</p>
+        </div>
+        <button onclick="loadVendorDesk()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">
+          Refresh
+        </button>
+      </div>
+      <div id="vendorRequestsContainer" class="space-y-4">
+        <p class="text-sm text-slate-400">Loading requests...</p>
+      </div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-hidden">
+      <div class="flex items-start justify-between gap-3 mb-5">
+        <div>
+          <h2 class="text-lg font-extrabold text-[#0F172A]">My Sent Quotes</h2>
+          <p class="text-xs text-slate-400 mt-1">Accepted quote par messenger active hota hai.</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-[#4B4EFC] flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+      </div>
+      <div id="vendorQuotesContainer" class="space-y-3">
+        <p class="text-sm text-slate-400">Loading quotes...</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="chatModal" class="hidden fixed inset-0 bg-black/60 z-[9999] p-4 flex items-center justify-center">
+  <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#0F172A] text-white px-5 py-4 flex items-center justify-between">
+      <div>
+        <h3 class="font-extrabold">Quote Messenger</h3>
+        <p class="text-xs text-slate-300">Chat after accepted quotation</p>
+      </div>
+      <button onclick="closeChat()" class="w-8 h-8 rounded-lg hover:bg-white/10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div id="chatMessages" class="h-80 overflow-y-auto p-4 bg-slate-50 space-y-3"></div>
+    <form id="chatForm" class="p-4 border-t border-slate-100 flex gap-2">
+      <input id="chatInput" class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4B4EFC]" placeholder="Type message...">
+      <button class="w-11 h-11 rounded-xl bg-[#4B4EFC] text-white">
+        <i class="fa-solid fa-paper-plane text-xs"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+<div id="Footer"></div>
+
+<script src="js/app.js"></script>
+<script src="../assets/js/user-api.js"></script>
+<script src="../assets/js/ai-chatbot.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+let activeQuoteId = null;
+
+load("navbar", "Components/navbar.html").then(() => {
+  updateUserNavbar();
+  setActiveNavbarLink();
+});
+
+load("Footer", "Components/Footer.html");
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadVendorDesk();
+  document.getElementById("chatForm").addEventListener("submit", handleSendChat);
+});
+
+async function loadVendorDesk() {
+  await Promise.all([loadOpenRequests(), loadVendorQuotes()]);
+  applyVoiceVendorQuoteDraft();
+}
+
+async function loadOpenRequests() {
+  const container = document.getElementById("vendorRequestsContainer");
+  container.innerHTML = `<p class="text-sm text-slate-400">Loading requests...</p>`;
+
+  try {
+    const response = await getEventRequests();
+    const requests = response.data || [];
+
+    if (!response.status || requests.length === 0) {
+      container.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm font-semibold">No customer requests available</div>`;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    requests.forEach((item) => {
+      container.innerHTML += `
+        <article class="vendor-card border border-slate-200 rounded-2xl p-5 bg-white overflow-hidden">
+          <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div>
+              <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-[#4B4EFC] text-[10px] font-bold uppercase">${item.event_type}</span>
+              <h3 class="text-base font-extrabold text-[#0F172A] mt-3">${item.city} event for ${item.guests} guests</h3>
+              <p class="text-safe text-xs text-slate-500 mt-2 leading-relaxed">${item.requirements}</p>
+              <p class="text-[11px] text-slate-400 mt-3">Customer: ${item.user_name} • Budget Rs. ${item.budget}</p>
+            </div>
+          </div>
+          <form onsubmit="sendVendorQuote(event, ${item.id})" class="mt-5 bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="text-[10px] font-bold uppercase text-slate-400">Quote Amount</label>
+                <input name="quote_amount" type="number" required placeholder="Amount"
+                  class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#4B4EFC]">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold uppercase text-slate-400">Contact</label>
+                <input name="contact_info" required placeholder="Phone / WhatsApp / Email"
+                  class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#4B4EFC]">
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold uppercase text-slate-400">Services Included</label>
+              <textarea name="message" required rows="3" maxlength="500" placeholder="Stage decor, catering, photography, lighting..."
+                class="mt-1 w-full resize-none border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#4B4EFC]"></textarea>
+            </div>
+            <button class="w-full bg-[#4B4EFC] hover:bg-[#3B3DDF] text-white rounded-xl py-2.5 text-xs font-bold">
+              Send Quote
+            </button>
+          </form>
+        </article>
+      `;
+    });
+  } catch (error) {
+    console.log("Vendor Requests Error:", error);
+    container.innerHTML = `<p class="text-sm text-red-500">Failed to load requests</p>`;
+  }
+}
+
+async function loadVendorQuotes() {
+  const container = document.getElementById("vendorQuotesContainer");
+  container.innerHTML = `<p class="text-sm text-slate-400">Loading quotes...</p>`;
+
+  try {
+    const response = await getVendorQuotes();
+    const quotes = response.data || [];
+
+    if (!response.status || quotes.length === 0) {
+      container.innerHTML = `<p class="text-sm text-slate-400">No quotes sent yet</p>`;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    quotes.forEach((quote) => {
+      const accepted = quote.status === "accepted";
+      container.innerHTML += `
+        <div class="vendor-card border border-slate-200 rounded-2xl p-4 bg-white overflow-hidden">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h4 class="text-safe text-sm font-extrabold text-[#0F172A]">${quote.event_type} • ${quote.city}</h4>
+              <p class="text-safe text-xs text-slate-400 mt-1">${quote.customer_name}</p>
+            </div>
+            <span class="shrink-0 px-2.5 py-1 rounded-full ${accepted ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"} text-[10px] font-bold uppercase">${quote.status}</span>
+          </div>
+          <div class="mt-4 rounded-2xl bg-slate-50 border border-slate-100 p-3">
+            <p class="text-[10px] font-bold uppercase text-slate-400">Quoted Amount</p>
+            <p class="text-xl font-black text-[#0F172A] mt-1">Rs. ${quote.quote_amount}</p>
+          </div>
+          <div class="mt-3">
+            <p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Services</p>
+            <p class="text-safe quote-message text-xs text-slate-500 leading-relaxed">${quote.message}</p>
+          </div>
+          ${accepted ? `
+            <button onclick="openChat(${quote.id})" class="mt-3 w-full bg-[#0F172A] text-white rounded-xl py-2 text-xs font-bold">
+              Open Chat
+            </button>
+          ` : ""}
+        </div>
+      `;
+    });
+  } catch (error) {
+    console.log("Vendor Quotes Error:", error);
+    container.innerHTML = `<p class="text-sm text-red-500">Failed to load quotes</p>`;
+  }
+}
+
+async function sendVendorQuote(event, requestId) {
+  event.preventDefault();
+  const form = event.target;
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
+  const response = await createEventQuote({
+    request_id: requestId,
+    vendor_name: user.name || "Vendor",
+    quote_amount: form.quote_amount.value,
+    contact_info: form.contact_info.value.trim(),
+    message: form.message.value.trim()
+  });
+
+  showToast(response.message, response.status ? "success" : "error");
+
+  if (response.status) {
+    form.reset();
+    loadVendorQuotes();
+  }
+}
+
+function applyVoiceVendorQuoteDraft() {
+  const rawDraft = localStorage.getItem("eventhubVoiceVendorQuote");
+  if (!rawDraft) return;
+
+  localStorage.removeItem("eventhubVoiceVendorQuote");
+
+  let draft = {};
+  try {
+    draft = JSON.parse(rawDraft);
+  } catch (error) {
+    draft = {};
+  }
+
+  const forms = Array.from(document.querySelectorAll("#vendorRequestsContainer form"));
+
+  if (forms.length === 0) {
+    showToast("No open request available for AI quote", "error");
+    return;
+  }
+
+  const query = String(draft.query || "").toLowerCase();
+  let targetForm = forms[0];
+
+  if (query) {
+    const matched = forms.find((form) => {
+      const cardText = form.closest("article")?.innerText.toLowerCase() || "";
+      return query.split(/\s+/).some((word) => word.length > 2 && cardText.includes(word));
+    });
+
+    if (matched) {
+      targetForm = matched;
+    }
+  }
+
+  targetForm.quote_amount.value = draft.amount || "";
+  targetForm.contact_info.value = draft.contact || "";
+  targetForm.message.value = draft.message || "Professional package includes decor, catering coordination, event setup and vendor support.";
+  targetForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  targetForm.quote_amount.focus();
+  showToast("AI filled a quote draft. Review contact/amount and send when ready.");
+}
+
+async function openChat(quoteId) {
+  activeQuoteId = quoteId;
+  document.getElementById("chatModal").classList.remove("hidden");
+  await loadChatMessages();
+}
+
+function closeChat() {
+  document.getElementById("chatModal").classList.add("hidden");
+  activeQuoteId = null;
+}
+
+function openAiWithPrompt(prompt) {
+  const launcher = document.getElementById("eventhubAiLauncher");
+  const panel = document.getElementById("eventhubAiPanel");
+  const input = document.getElementById("eventhubAiInput");
+
+  if (panel && panel.classList.contains("hidden")) {
+    launcher?.click();
+  }
+
+  if (input) {
+    input.value = prompt;
+    input.focus();
+  }
+}
+
+async function loadChatMessages() {
+  if (!activeQuoteId) return;
+
+  const response = await getQuoteMessages(activeQuoteId);
+  const box = document.getElementById("chatMessages");
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
+  if (!response.status) {
+    box.innerHTML = `<p class="text-sm text-red-500">${response.message}</p>`;
+    return;
+  }
+
+  box.innerHTML = "";
+
+  (response.data || []).forEach((msg) => {
+    const mine = Number(msg.sender_id) === Number(user.id);
+    box.innerHTML += `
+      <div class="${mine ? "ml-auto bg-[#4B4EFC] text-white" : "bg-white border border-slate-200 text-slate-600"} text-safe max-w-[80%] rounded-2xl px-3 py-2 text-xs">
+        <p class="font-bold mb-1">${msg.sender_name}</p>
+        <p>${msg.message}</p>
+      </div>
+    `;
+  });
+
+  box.scrollTop = box.scrollHeight;
+}
+
+async function handleSendChat(event) {
+  event.preventDefault();
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+
+  if (!message || !activeQuoteId) return;
+
+  const response = await sendQuoteMessage(activeQuoteId, message);
+
+  if (response.status) {
+    input.value = "";
+    loadChatMessages();
+  } else {
+    showToast(response.message, "error");
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Event Request | EventHub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; background-color: #F8FAFC; }
+    @keyframes requestFloat3d {
+      0%, 100% { transform: translate3d(0, 0, 0) rotateY(-14deg) rotateX(10deg); }
+      50% { transform: translate3d(0, -12px, 28px) rotateY(8deg) rotateX(16deg); }
+    }
+    .request-3d-stage {
+      perspective: 900px;
+      transform-style: preserve-3d;
+    }
+    .request-3d-card {
+      transform-style: preserve-3d;
+      animation: requestFloat3d 6s ease-in-out infinite;
+    }
+    .request-ai-card {
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .request-ai-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+      border-color: rgba(75, 78, 252, 0.24);
+    }
+    .text-safe {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+  </style>
+</head>
+
+<body class="text-[#1E293B] antialiased min-h-screen flex flex-col justify-between">
+
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
+
+if (!loggedUser) {
+  window.location.href = "login.html";
+}
+</script>
+
+<div id="navbar"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow space-y-8">
+  <section class="bg-[#0F172A] text-white rounded-3xl overflow-hidden border border-slate-800">
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+      <div class="p-8 lg:p-10 space-y-5">
+        <span class="inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest bg-white/10 text-indigo-100 px-3 py-1 rounded-full">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          Custom Event Marketplace
+        </span>
+
+        <div>
+          <h1 class="text-3xl lg:text-4xl font-black tracking-tight">
+            Post your dream event and get vendor quotes
+          </h1>
+          <p class="text-sm text-slate-300 mt-3 leading-relaxed max-w-xl">
+            Wedding, birthday, corporate dinner ya private event ki requirements submit karein. Vendors/admin aapko budget ke mutabiq quote bhej sakte hain.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
+            <i class="fa-solid fa-clipboard-list text-indigo-200"></i>
+            <p class="text-[11px] text-slate-300 mt-2">Requirement</p>
+          </div>
+          <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
+            <i class="fa-solid fa-handshake text-indigo-200"></i>
+            <p class="text-[11px] text-slate-300 mt-2">Vendor Quote</p>
+          </div>
+          <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
+            <i class="fa-solid fa-calendar-check text-indigo-200"></i>
+            <p class="text-[11px] text-slate-300 mt-2">Finalize</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="min-h-[320px] bg-cover bg-center relative overflow-hidden request-3d-stage"
+        style="background-image: linear-gradient(90deg, rgba(15,23,42,.35), rgba(15,23,42,.05)), url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80');">
+        <div class="request-3d-card absolute right-8 top-8 w-52 rounded-3xl bg-white/90 backdrop-blur border border-white/50 p-5 shadow-2xl">
+          <p class="text-[10px] font-black uppercase tracking-widest text-[#4B4EFC]">AI Match</p>
+          <h3 class="text-2xl font-black text-[#0F172A] mt-1">3 Quotes</h3>
+          <p class="text-xs text-slate-500 mt-2">Vendors compare request details and send offers.</p>
+        </div>
+        <div class="request-3d-card absolute right-48 bottom-8 w-44 rounded-3xl bg-[#4B4EFC] text-white p-4 shadow-2xl" style="animation-delay:1s">
+          <p class="text-[10px] font-black uppercase tracking-widest text-indigo-100">Smart Flow</p>
+          <p class="text-sm font-extrabold mt-2">Request to quote to chat</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+    <div id="vendorBlockedNotice" class="hidden lg:col-span-3 bg-amber-50 border border-amber-100 rounded-2xl p-5 text-amber-800">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white text-amber-600 flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-store"></i>
+        </div>
+        <div>
+          <h3 class="font-extrabold">Vendor account active</h3>
+          <p class="text-sm mt-1">Is email se aap vendor ban chuke hain, isliye customer event request create nahi kar sakte. Customer request ke liye separate customer account use karein.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-1 space-y-4">
+    <form id="eventRequestForm" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+      <div>
+        <h2 class="text-lg font-extrabold text-[#0F172A]">Create Event Request</h2>
+        <p class="text-xs text-slate-400 mt-1">Details jitni clear hongi, quote utna accurate milega.</p>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold text-slate-500">Event Type</label>
+        <select id="eventType" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#4B4EFC]">
+          <option value="Wedding">Wedding</option>
+          <option value="Birthday">Birthday</option>
+          <option value="Corporate">Corporate</option>
+          <option value="Conference">Conference</option>
+          <option value="Private Party">Private Party</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[11px] font-bold text-slate-500">Date</label>
+          <input id="eventDate" type="date" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#4B4EFC]">
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-slate-500">City</label>
+          <input id="eventCity" type="text" placeholder="Karachi" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#4B4EFC]">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[11px] font-bold text-slate-500">Guests</label>
+          <input id="eventGuests" type="number" min="1" placeholder="200" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#4B4EFC]">
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-slate-500">Budget</label>
+          <input id="eventBudget" type="number" min="1" placeholder="150000" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#4B4EFC]">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold text-slate-500">Requirements</label>
+        <textarea id="eventRequirements" rows="5" placeholder="Stage decor, catering, photography, sound system..."
+          class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#4B4EFC]"></textarea>
+      </div>
+
+      <button id="eventRequestBtn" type="submit" class="w-full bg-[#4B4EFC] hover:bg-[#3B3DDF] text-white rounded-xl py-3 text-sm font-bold">
+        Post Request
+      </button>
+    </form>
+
+    <div class="request-ai-card bg-[#0F172A] text-white rounded-2xl p-6 border border-slate-800 overflow-hidden">
+      <div class="flex items-start gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-white/10 text-indigo-200 flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-indigo-200 font-bold">AI Request Coach</p>
+          <h3 class="text-lg font-black mt-1">Clear request, better quotes</h3>
+          <p class="text-xs text-slate-300 leading-relaxed mt-2">AI se budget split, vendor checklist aur requirements wording generate karwao before posting.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-2 mt-5">
+        <button type="button" onclick="openAiWithPrompt('Plan a wedding request in Karachi for 200 guests under Rs. 200000')" class="bg-white text-[#0F172A] rounded-xl py-2.5 text-xs font-extrabold">
+          Ask AI for request plan
+        </button>
+        <button type="button" onclick="openAiWithPrompt('Create vendor checklist for my custom event request')" class="bg-white/10 text-white rounded-xl py-2.5 text-xs font-extrabold border border-white/10">
+          Generate checklist
+        </button>
+      </div>
+    </div>
+    </div>
+
+    <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h2 class="text-lg font-extrabold text-[#0F172A]">My Event Requests</h2>
+          <p class="text-xs text-slate-400 mt-1">Vendor quotes yahan track honge.</p>
+        </div>
+        <button onclick="loadEventRequests()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">
+          Refresh
+        </button>
+      </div>
+
+      <div id="eventRequestsContainer" class="space-y-4">
+        <p class="text-sm text-slate-400">Loading requests...</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h2 class="text-lg font-extrabold text-[#0F172A]">Received Vendor Quotes</h2>
+        <p class="text-xs text-slate-400 mt-1">Quote accept karne ke baad vendor ke sath messenger open hoga.</p>
+      </div>
+      <button onclick="loadCustomerQuotes()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">
+        Refresh
+      </button>
+    </div>
+    <div id="customerQuotesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <p class="text-sm text-slate-400">Loading quotes...</p>
+    </div>
+  </section>
+</main>
+
+<div id="chatModal" class="hidden fixed inset-0 bg-black/60 z-[9999] p-4 flex items-center justify-center">
+  <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#0F172A] text-white px-5 py-4 flex items-center justify-between">
+      <div>
+        <h3 class="font-extrabold">Vendor Messenger</h3>
+        <p class="text-xs text-slate-300">Discuss accepted quotation</p>
+      </div>
+      <button onclick="closeChat()" class="w-8 h-8 rounded-lg hover:bg-white/10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div id="chatMessages" class="h-80 overflow-y-auto p-4 bg-slate-50 space-y-3"></div>
+    <form id="chatForm" class="p-4 border-t border-slate-100 flex gap-2">
+      <input id="chatInput" class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#4B4EFC]" placeholder="Type message...">
+      <button class="w-11 h-11 rounded-xl bg-[#4B4EFC] text-white">
+        <i class="fa-solid fa-paper-plane text-xs"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+<div id="Footer"></div>
+
+<script src="js/app.js"></script>
+<script src="../assets/js/user-api.js"></script>
+<script src="../assets/js/ai-chatbot.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+let activeQuoteId = null;
+
+load("navbar", "Components/navbar.html").then(() => {
+  updateUserNavbar();
+  setActiveNavbarLink();
+});
+
+load("Footer", "Components/Footer.html");
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyRoleRules();
+  loadEventRequests();
+  loadCustomerQuotes();
+  document.getElementById("eventRequestForm").addEventListener("submit", handleEventRequestSubmit);
+  document.getElementById("chatForm").addEventListener("submit", handleSendChat);
+  applyVoiceEventDraft();
+});
+
+function applyRoleRules() {
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
+  if (user.role === "vendor") {
+    document.getElementById("vendorBlockedNotice").classList.remove("hidden");
+    document.getElementById("eventRequestForm").classList.add("opacity-60", "pointer-events-none");
+  }
+}
+
+function applyVoiceEventDraft() {
+  const rawDraft = localStorage.getItem("eventhubVoiceEventDraft");
+  if (!rawDraft) return;
+
+  localStorage.removeItem("eventhubVoiceEventDraft");
+
+  let draft = {};
+  try {
+    draft = JSON.parse(rawDraft);
+  } catch (error) {
+    draft = {};
+  }
+
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
+  if (user.role === "vendor") {
+    showToast("Vendor account cannot create customer event requests", "error");
+    return;
+  }
+
+  document.getElementById("eventType").value = draft.event_type || "Private Party";
+  document.getElementById("eventCity").value = draft.city || "Karachi";
+  document.getElementById("eventGuests").value = draft.guests || 100;
+  document.getElementById("eventBudget").value = draft.budget || 150000;
+  document.getElementById("eventRequirements").value = draft.requirements || "AI generated custom event request.";
+  document.getElementById("eventDate").focus();
+  showToast("AI filled your event request. Add date and submit when ready.");
+}
+
+async function handleEventRequestSubmit(event) {
+  event.preventDefault();
+
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
+  if (user.role === "vendor") {
+    showToast("Vendor account cannot create customer event requests", "error");
+    return;
+  }
+
+  const btn = document.getElementById("eventRequestBtn");
+  btn.innerText = "Posting...";
+  btn.disabled = true;
+
+  const payload = {
+    event_type: document.getElementById("eventType").value,
+    event_date: document.getElementById("eventDate").value,
+    city: document.getElementById("eventCity").value.trim(),
+    guests: document.getElementById("eventGuests").value,
+    budget: document.getElementById("eventBudget").value,
+    requirements: document.getElementById("eventRequirements").value.trim()
+  };
+
+  try {
+    const response = await createEventRequest(payload);
+
+    if (!response.status) {
+      showToast(response.message || "Request failed", "error");
+      return;
+    }
+
+    showToast(response.message);
+    document.getElementById("eventRequestForm").reset();
+    loadEventRequests();
+    loadCustomerQuotes();
+  } catch (error) {
+    console.log("Event Request Error:", error);
+    showToast("Request submit failed", "error");
+  } finally {
+    btn.innerText = "Post Request";
+    btn.disabled = false;
+  }
+}
+
+async function loadEventRequests() {
+  const container = document.getElementById("eventRequestsContainer");
+  container.innerHTML = `<p class="text-sm text-slate-400">Loading requests...</p>`;
+
+  try {
+    const response = await getUserEventRequests();
+
+    if (!response.status) {
+      container.innerHTML = `<p class="text-sm text-red-500">${response.message}</p>`;
+      return;
+    }
+
+    const requests = response.data || [];
+
+    if (requests.length === 0) {
+      container.innerHTML = `<div class="text-center py-14 text-slate-400 text-sm font-semibold">No custom requests yet</div>`;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    requests.forEach((item) => {
+      container.innerHTML += `
+        <article class="border border-slate-200 rounded-2xl p-5 hover:border-[#4B4EFC]/30 transition">
+          <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-[#4B4EFC] text-[10px] font-bold uppercase">${item.event_type}</span>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase">${item.status}</span>
+              </div>
+              <h3 class="text-base font-extrabold text-[#0F172A] mt-3">${item.city} event for ${item.guests} guests</h3>
+              <p class="text-safe text-xs text-slate-500 mt-2 leading-relaxed">${item.requirements}</p>
+              <div class="flex flex-wrap gap-3 mt-4 text-[11px] text-slate-400 font-semibold">
+                <span><i class="fa-regular fa-calendar mr-1"></i>${item.event_date || "Flexible date"}</span>
+                <span><i class="fa-solid fa-wallet mr-1"></i>Rs. ${item.budget}</span>
+                <span><i class="fa-solid fa-message mr-1"></i>${item.quote_count || 0} quotes</span>
+              </div>
+            </div>
+            <div class="min-w-[140px] bg-slate-50 rounded-xl p-3 text-center">
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Starting Quote</p>
+              <h4 class="text-lg font-black text-[#0F172A] mt-1">${item.starting_quote ? "Rs. " + item.starting_quote : "Pending"}</h4>
+            </div>
+          </div>
+        </article>
+      `;
+    });
+  } catch (error) {
+    console.log("Load Event Requests Error:", error);
+    container.innerHTML = `<p class="text-sm text-red-500">Failed to load event requests</p>`;
+  }
+}
+
+async function loadCustomerQuotes() {
+  const container = document.getElementById("customerQuotesContainer");
+  container.innerHTML = `<p class="text-sm text-slate-400">Loading quotes...</p>`;
+
+  try {
+    const response = await getCustomerQuotes();
+    const quotes = response.data || [];
+
+    if (!response.status || quotes.length === 0) {
+      container.innerHTML = `<div class="lg:col-span-2 text-center py-12 text-slate-400 text-sm font-semibold">No quotes received yet</div>`;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    quotes.forEach((quote) => {
+      const accepted = quote.status === "accepted";
+      container.innerHTML += `
+        <article class="border border-slate-200 rounded-2xl p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <span class="px-2.5 py-1 rounded-full ${accepted ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"} text-[10px] font-bold uppercase">${quote.status}</span>
+              <h3 class="text-base font-extrabold text-[#0F172A] mt-3">${quote.vendor_name}</h3>
+              <p class="text-xs text-slate-400 mt-1">${quote.event_type} • ${quote.city}</p>
+            </div>
+            <h4 class="text-xl font-black text-[#0F172A]">Rs. ${quote.quote_amount}</h4>
+          </div>
+          <p class="text-safe text-sm text-slate-500 mt-4 leading-relaxed">${quote.message}</p>
+          <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-phone mr-1"></i>${quote.contact_info}</p>
+          <div class="flex gap-2 mt-4">
+            ${!accepted ? `
+              <button onclick="handleAcceptQuote(${quote.id})" class="flex-1 bg-[#4B4EFC] text-white rounded-xl py-2.5 text-xs font-bold">
+                Accept Quote
+              </button>
+            ` : ""}
+            ${accepted ? `
+              <button onclick="openChat(${quote.id})" class="flex-1 bg-[#0F172A] text-white rounded-xl py-2.5 text-xs font-bold">
+                Open Chat
+              </button>
+            ` : ""}
+          </div>
+        </article>
+      `;
+    });
+  } catch (error) {
+    console.log("Customer Quotes Error:", error);
+    container.innerHTML = `<p class="text-sm text-red-500">Failed to load quotes</p>`;
+  }
+}
+
+async function handleAcceptQuote(quoteId) {
+  const response = await acceptEventQuote(quoteId);
+
+  showToast(response.message, response.status ? "success" : "error");
+
+  if (response.status) {
+    loadCustomerQuotes();
+    openChat(quoteId);
+  }
+}
+
+async function openChat(quoteId) {
+  activeQuoteId = quoteId;
+  document.getElementById("chatModal").classList.remove("hidden");
+  await loadChatMessages();
+}
+
+function closeChat() {
+  document.getElementById("chatModal").classList.add("hidden");
+  activeQuoteId = null;
+}
+
+function openAiWithPrompt(prompt) {
+  const launcher = document.getElementById("eventhubAiLauncher");
+  const panel = document.getElementById("eventhubAiPanel");
+  const input = document.getElementById("eventhubAiInput");
+
+  if (panel && panel.classList.contains("hidden")) {
+    launcher?.click();
+  }
+
+  if (input) {
+    input.value = prompt;
+    input.focus();
+  }
+}
+
+async function loadChatMessages() {
+  if (!activeQuoteId) return;
+
+  const response = await getQuoteMessages(activeQuoteId);
+  const box = document.getElementById("chatMessages");
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
+  if (!response.status) {
+    box.innerHTML = `<p class="text-sm text-red-500">${response.message}</p>`;
+    return;
+  }
+
+  box.innerHTML = "";
+
+  (response.data || []).forEach((msg) => {
+    const mine = Number(msg.sender_id) === Number(user.id);
+    box.innerHTML += `
+      <div class="${mine ? "ml-auto bg-[#4B4EFC] text-white" : "bg-white border border-slate-200 text-slate-600"} max-w-[80%] rounded-2xl px-3 py-2 text-xs">
+        <p class="font-bold mb-1">${msg.sender_name}</p>
+        <p>${msg.message}</p>
+      </div>
+    `;
+  });
+
+  box.scrollTop = box.scrollHeight;
+}
+
+async function handleSendChat(event) {
+  event.preventDefault();
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+
+  if (!message || !activeQuoteId) return;
+
+  const response = await sendQuoteMessage(activeQuoteId, message);
+
+  if (response.status) {
+    input.value = "";
+    loadChatMessages();
+  } else {
+    showToast(response.message, "error");
+  }
+}
+</script>
+
+</body>
+</html>

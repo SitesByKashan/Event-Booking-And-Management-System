@@ -16,6 +16,32 @@
       font-family: 'Poppins', sans-serif;
       background-color: #F8FAFC;
     }
+    .modern-surface {
+      transform-style: preserve-3d;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .modern-surface:hover {
+      transform: translateY(-5px) rotateX(1deg);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+      border-color: rgba(75, 78, 252, 0.24);
+    }
+    @keyframes spinStage {
+      0%, 100% { transform: rotateX(58deg) rotateZ(-24deg) translateY(0); }
+      50% { transform: rotateX(58deg) rotateZ(-8deg) translateY(-18px); }
+    }
+    @keyframes floatBadge {
+      0%, 100% { transform: translate3d(0,0,0) rotateY(-18deg); }
+      50% { transform: translate3d(0,-14px,32px) rotateY(10deg); }
+    }
+    .event-3d-stage {
+      transform-style: preserve-3d;
+      animation: spinStage 6s ease-in-out infinite;
+      box-shadow: 0 35px 90px rgba(15,23,42,.35);
+    }
+    .event-3d-badge {
+      animation: floatBadge 4.5s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
   </style>
 </head>
 
@@ -24,6 +50,44 @@
   <div id="navbar"></div>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow flex flex-col space-y-6">
+
+    <section class="relative overflow-hidden rounded-[2rem] bg-[#0F172A] text-white border border-slate-800 min-h-[300px]">
+      <div class="absolute inset-0 bg-cover bg-center opacity-35"
+        style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1800&q=80')"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:22px_22px] opacity-10"></div>
+
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center p-8 lg:p-10">
+        <div class="space-y-5">
+          <span class="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">
+            <i class="fa-solid fa-cube"></i>
+            3D Event Discovery
+          </span>
+          <div>
+            <h1 class="text-3xl lg:text-5xl font-black tracking-tight leading-tight">Find the right event faster</h1>
+            <p class="text-sm text-slate-300 mt-3 max-w-xl">Search, filter, book tickets, or let EventHub AI guide you toward the best event experience.</p>
+          </div>
+          <div class="flex flex-wrap gap-3 text-xs font-bold">
+            <span class="bg-white/10 border border-white/10 px-3 py-2 rounded-xl">Live availability</span>
+            <span class="bg-white/10 border border-white/10 px-3 py-2 rounded-xl">Smart filters</span>
+            <span class="bg-white/10 border border-white/10 px-3 py-2 rounded-xl">Instant booking</span>
+          </div>
+        </div>
+
+        <div class="relative min-h-[220px] hidden lg:block">
+          <div class="event-3d-stage absolute right-20 top-10 w-64 h-40 rounded-[2rem] bg-gradient-to-br from-indigo-400/60 to-sky-300/30 border border-white/20 backdrop-blur">
+            <div class="absolute inset-7 rounded-2xl border border-white/25 translate-z-8"></div>
+          </div>
+          <div class="event-3d-badge absolute right-4 top-4 bg-white text-[#0F172A] rounded-2xl p-4 shadow-2xl">
+            <p class="text-[10px] font-bold uppercase text-slate-400">Seats</p>
+            <h3 class="text-2xl font-black">Live</h3>
+          </div>
+          <div class="event-3d-badge absolute right-56 bottom-6 bg-[#4B4EFC] text-white rounded-2xl p-4 shadow-2xl" style="animation-delay:1s">
+            <p class="text-[10px] font-bold uppercase text-indigo-100">AI Match</p>
+            <h3 class="text-2xl font-black">98%</h3>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="text-left">
       <h1 class="text-xl font-bold text-[#0F172A] tracking-tight mb-4">Search Events</h1>
@@ -383,6 +447,7 @@
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="js/app.js"></script>
   <script src="../assets/js/user-api.js"></script>
+  <script src="../assets/js/ai-chatbot.js"></script>
 
   <script>
     let allEvents = [];
@@ -443,11 +508,76 @@
           filterEvents();
         }
 
+        applyVoiceBookingIntent();
+
       } catch (error) {
         console.log("Events Load Error:", error);
         document.getElementById("eventsGrid").innerHTML =
           `<p class="text-red-500 text-sm">Failed to load events</p>`;
       }
+    }
+
+    function applyVoiceBookingIntent() {
+      const rawIntent = localStorage.getItem("eventhubVoiceBookingIntent");
+      if (!rawIntent) return;
+
+      localStorage.removeItem("eventhubVoiceBookingIntent");
+
+      let intent = {};
+      try {
+        intent = JSON.parse(rawIntent);
+      } catch (error) {
+        intent = {};
+      }
+
+      const query = String(intent.query || "").trim().toLowerCase();
+      const tickets = Math.max(1, Number(intent.tickets || 1));
+
+      if (query) {
+        document.getElementById("searchInput").value = query;
+        filterEvents();
+      }
+
+      const matchedEvent = findVoiceMatchedEvent(query);
+
+      if (!matchedEvent) {
+        showToast("AI could not find a matching event. Please choose manually.", "error");
+        return;
+      }
+
+      setTimeout(async () => {
+        await openBookingModal(matchedEvent.id);
+        const ticketInput = document.getElementById("bookingTickets");
+        ticketInput.value = tickets;
+        calculateBookingTotal();
+        showToast(`AI opened the matching booking with ${tickets} ticket${tickets === 1 ? "" : "s"}. Please review and confirm payment.`);
+      }, 500);
+    }
+
+    function findVoiceMatchedEvent(query) {
+      if (!query) {
+        return allEvents[0] || null;
+      }
+
+      const keywords = query.split(/\s+/).filter(word => word.length > 2);
+      let bestEvent = null;
+      let bestScore = 0;
+
+      allEvents.forEach((event) => {
+        const haystack = `${event.title || ""} ${event.category_name || ""} ${event.location || ""} ${event.description || ""}`.toLowerCase();
+        let score = 0;
+
+        keywords.forEach((word) => {
+          if (haystack.includes(word)) score += 1;
+        });
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestEvent = event;
+        }
+      });
+
+      return bestEvent || allEvents[0] || null;
     }
 
     function loadCategories(events) {
@@ -529,18 +659,16 @@
       grid.innerHTML = "";
 
       events.forEach((event) => {
-        const image = event.image
-          ? `http://localhost:8000/${event.image}`
-          : "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=500&q=80";
+        const image = getProfessionalEventImage(event);
 
         const price = Number(event.price || 0);
         const priceText = price === 0 ? "Free" : "Rs. " + price;
 
         grid.innerHTML += `
-          <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all relative group flex flex-col justify-between">
+          <div class="modern-surface bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm transition-all relative group flex flex-col justify-between">
 
             <div class="w-full h-44 bg-gray-100 overflow-hidden relative">
-              <img src="${image}" alt="${event.title}" class="w-full h-full object-cover">
+              <img src="${image}" alt="${event.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
 
               <span class="absolute bottom-3 left-3 bg-[#4B4EFC] text-white text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">
                 ${event.category_name || "General"}
@@ -560,6 +688,10 @@
                 <h3 class="text-sm font-bold text-[#0F172A] mt-1.5 line-clamp-1">
                   ${event.title}
                 </h3>
+
+                <p class="text-[11px] text-gray-400 leading-relaxed mt-2 line-clamp-2">
+                  ${event.description || "Professional event experience with curated services and managed entry."}
+                </p>
 
                 <div class="space-y-1 mt-2 text-[11px] text-gray-400 font-medium">
                   <p>
@@ -595,6 +727,41 @@
           </div>
         `;
       });
+    }
+
+    function getProfessionalEventImage(event) {
+      const category = (event.category_name || "").toLowerCase();
+      const uploaded = String(event.image || "");
+
+      if (uploaded && !uploaded.toLowerCase().includes("oip")) {
+        if (uploaded.startsWith("http://") || uploaded.startsWith("https://")) {
+          return uploaded;
+        }
+
+        return `http://localhost:8000/${uploaded}`;
+      }
+
+      if (category.includes("technology")) {
+        return "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=900&q=80";
+      }
+
+      if (category.includes("music")) {
+        return "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=900&q=80";
+      }
+
+      if (category.includes("sports")) {
+        return "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=900&q=80";
+      }
+
+      if (category.includes("education")) {
+        return "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=80";
+      }
+
+      if (category.includes("business")) {
+        return "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=900&q=80";
+      }
+
+      return "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=900&q=80";
     }
 
     function clearFilters() {

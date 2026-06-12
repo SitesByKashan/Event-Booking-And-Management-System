@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <title>EventHub - Event Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = { darkMode: 'class', }
   </script>
@@ -161,6 +162,7 @@ if (!loggedUser || loggedUser.role !== "admin") {
   </div>
 
   <script src="../assets/js/admin-api.js"></script>
+  <script src="../assets/js/ai-chatbot.js"></script>
   <script src="js/app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
@@ -251,9 +253,7 @@ if (!loggedUser || loggedUser.role !== "admin") {
       events.forEach(event => {
         const soldTickets = Number(event.total_tickets || 0) - Number(event.available_tickets || 0);
 
-        const imagePath = event.image
-          ? `http://localhost:8000/${event.image}`
-          : "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=600&q=80";
+        const imagePath = resolveEventImage(event.image);
 
         const statusClass = event.status === "active"
           ? "text-emerald-600 bg-emerald-50 border-emerald-100"
@@ -262,7 +262,7 @@ if (!loggedUser || loggedUser.role !== "admin") {
         grid.innerHTML += `
         <div class="event-card bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden dark:bg-[#161730] dark:border-slate-800 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
 
-          <img src="${imagePath}" class="h-48 w-full object-cover">
+          <img src="${imagePath}" class="h-48 w-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=900&q=80'">
 
           <div class="p-5 space-y-4">
             <div class="flex justify-between items-start gap-3">
@@ -300,6 +300,20 @@ if (!loggedUser || loggedUser.role !== "admin") {
         </div>
       `;
       });
+    }
+
+    function resolveEventImage(image) {
+      const value = String(image || "");
+
+      if (!value) {
+        return "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=900&q=80";
+      }
+
+      if (value.startsWith("http://") || value.startsWith("https://")) {
+        return value;
+      }
+
+      return `http://localhost:8000/${value}`;
     }
 
     function openAddModal() {

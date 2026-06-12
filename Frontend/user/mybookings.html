@@ -15,6 +15,23 @@
       font-family: 'Poppins', sans-serif;
       background-color: #F8FAFC;
     }
+    .glass-stat {
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+    .glass-stat:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 55px rgba(15, 23, 42, 0.10);
+    }
+    .booking-card {
+      transform-style: preserve-3d;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .booking-card:hover {
+      transform: translateY(-4px) rotateX(1deg);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+      border-color: rgba(75, 78, 252, 0.24);
+    }
   </style>
 </head>
 
@@ -39,7 +56,7 @@ if (!loggedUser) {
 
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
 
-    <div class="bg-[#EFF2FE]/70 border border-[#4B4EFC]/10 rounded-2xl p-5 flex items-center justify-between">
+    <div class="glass-stat bg-[#EFF2FE]/70 border border-[#4B4EFC]/10 rounded-2xl p-5 flex items-center justify-between">
       <div>
         <span class="text-[9px] font-bold text-[#4B4EFC] bg-[#EFF2FE] px-2.5 py-0.5 rounded-md uppercase">Bookings</span>
         <h3 id="totalBookings" class="text-2xl font-bold text-[#0F172A] mt-2">0</h3>
@@ -50,7 +67,7 @@ if (!loggedUser) {
       </div>
     </div>
 
-    <div class="bg-[#EBF7F2]/70 border border-[#10B981]/10 rounded-2xl p-5 flex items-center justify-between">
+    <div class="glass-stat bg-[#EBF7F2]/70 border border-[#10B981]/10 rounded-2xl p-5 flex items-center justify-between">
       <div>
         <span class="text-[9px] font-bold text-[#10B981] bg-[#EBF7F2] px-2.5 py-0.5 rounded-md uppercase">Spent</span>
         <h3 id="totalSpent" class="text-2xl font-bold text-[#0F172A] mt-2">Rs. 0</h3>
@@ -61,7 +78,7 @@ if (!loggedUser) {
       </div>
     </div>
 
-    <div class="bg-[#FFFBEB]/70 border border-[#F59E0B]/10 rounded-2xl p-5 flex items-center justify-between">
+    <div class="glass-stat bg-[#FFFBEB]/70 border border-[#F59E0B]/10 rounded-2xl p-5 flex items-center justify-between">
       <div>
         <span class="text-[9px] font-bold text-[#F59E0B] bg-[#FFFBEB] px-2.5 py-0.5 rounded-md uppercase">Tickets</span>
         <h3 id="totalTickets" class="text-2xl font-bold text-[#0F172A] mt-2">0</h3>
@@ -90,13 +107,61 @@ if (!loggedUser) {
 
 </main>
 
+<div id="cancelModal" class="hidden fixed inset-0 bg-black/60 z-[9999] p-4 flex items-center justify-center">
+  <div class="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl">
+    <div class="p-6 text-center">
+      <div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto">
+        <i class="fa-solid fa-calendar-xmark text-xl"></i>
+      </div>
+      <h3 class="text-xl font-black text-[#0F172A] mt-4">Cancel this booking?</h3>
+      <p class="text-sm text-slate-500 mt-2">This will move your booking to cancelled status. You can request a refund separately if payment was completed.</p>
+      <div class="flex gap-3 mt-6">
+        <button onclick="closeCancelModal()" class="w-1/2 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold">
+          Keep Booking
+        </button>
+        <button onclick="confirmCancelBooking()" class="w-1/2 py-3 rounded-xl bg-red-600 text-white font-bold">
+          Cancel Booking
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="refundModal" class="hidden fixed inset-0 bg-black/60 z-[9999] p-4 flex items-center justify-center">
+  <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#0F172A] text-white px-6 py-5">
+      <h3 class="text-xl font-black">Request Refund</h3>
+      <p class="text-xs text-slate-300 mt-1">Tell us why you need a refund for this booking.</p>
+    </div>
+    <div class="p-6 space-y-4">
+      <textarea id="refundReason" rows="5" placeholder="Write refund reason..."
+        class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#4B4EFC]"></textarea>
+      <div class="bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-700">
+        Refund request admin review ke liye submit hogi. Aapko notification aur email log generate hoga.
+      </div>
+      <div class="flex gap-3">
+        <button onclick="closeRefundModal()" class="w-1/2 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold">
+          Close
+        </button>
+        <button onclick="submitRefundRequest()" class="w-1/2 py-3 rounded-xl bg-[#4B4EFC] text-white font-bold">
+          Submit Refund
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="Footer"></div>
 
 <script src="js/app.js"></script>
 <script src="../assets/js/user-api.js"></script>
+<script src="../assets/js/ai-chatbot.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
+let selectedCancelBookingId = null;
+let selectedRefundBookingId = null;
+
 load("navbar", "Components/navbar.html").then(() => {
   updateUserNavbar();
 });
@@ -164,13 +229,21 @@ function renderBookings(bookings) {
   container.innerHTML = "";
 
   bookings.forEach(booking => {
-    const statusClass =
-      booking.status === "confirmed"
-        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-        : "bg-red-50 text-red-600 border-red-100";
+    let statusClass = "bg-amber-50 text-amber-600 border-amber-100";
+
+    if (booking.status === "confirmed") {
+      statusClass = "bg-emerald-50 text-emerald-600 border-emerald-100";
+    }
+
+    if (booking.status === "cancelled") {
+      statusClass = "bg-red-50 text-red-600 border-red-100";
+    }
+
+    const canCancel = booking.status !== "cancelled";
+    const canRefund = booking.status === "confirmed";
 
     container.innerHTML += `
-      <div class="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white hover:border-gray-200 transition-all">
+      <div class="booking-card border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white transition-all">
 
         <div class="flex items-center space-x-4">
           <div class="w-16 h-16 rounded-xl bg-[#EFF2FE] text-[#4B4EFC] flex items-center justify-center shrink-0">
@@ -211,11 +284,94 @@ function renderBookings(bookings) {
           <span class="mt-2 px-3 py-1 text-[10px] font-bold rounded-full border ${statusClass}">
             ${booking.status}
           </span>
+
+          <div class="flex sm:flex-col gap-2 mt-3">
+            ${canCancel ? `
+              <button onclick="handleCancelBooking(${booking.id})"
+                class="px-3 py-2 rounded-lg border border-red-100 bg-red-50 text-red-600 text-[10px] font-bold hover:bg-red-100">
+                Cancel
+              </button>
+            ` : ""}
+
+            ${canRefund ? `
+              <button onclick="handleRefundRequest(${booking.id})"
+                class="px-3 py-2 rounded-lg border border-indigo-100 bg-indigo-50 text-[#4B4EFC] text-[10px] font-bold hover:bg-indigo-100">
+                Refund
+              </button>
+            ` : ""}
+          </div>
         </div>
 
       </div>
     `;
   });
+}
+
+async function handleCancelBooking(bookingId) {
+  selectedCancelBookingId = bookingId;
+  document.getElementById("cancelModal").classList.remove("hidden");
+}
+
+function closeCancelModal() {
+  document.getElementById("cancelModal").classList.add("hidden");
+  selectedCancelBookingId = null;
+}
+
+async function confirmCancelBooking() {
+  if (!selectedCancelBookingId) return;
+
+  try {
+    const response = await cancelBooking(selectedCancelBookingId);
+
+    if (!response.status) {
+      showToast(response.message || "Booking cancel failed", "error");
+      return;
+    }
+
+    showToast(response.message || "Booking cancelled successfully");
+    closeCancelModal();
+    loadUserBookings();
+    updateNotificationBadge();
+  } catch (error) {
+    console.log("Cancel Booking Error:", error);
+    showToast("Cancel request failed", "error");
+  }
+}
+
+async function handleRefundRequest(bookingId) {
+  selectedRefundBookingId = bookingId;
+  document.getElementById("refundReason").value = "";
+  document.getElementById("refundModal").classList.remove("hidden");
+}
+
+function closeRefundModal() {
+  document.getElementById("refundModal").classList.add("hidden");
+  selectedRefundBookingId = null;
+}
+
+async function submitRefundRequest() {
+  const reason = document.getElementById("refundReason").value.trim();
+
+  if (!reason || reason.trim().length < 5) {
+    showToast("Please enter a proper refund reason", "warning");
+    return;
+  }
+
+  try {
+    const response = await requestRefund(selectedRefundBookingId, reason);
+
+    if (!response.status) {
+      showToast(response.message || "Refund request failed", "error");
+      return;
+    }
+
+    showToast(response.message || "Refund request submitted");
+    closeRefundModal();
+    updateNotificationBadge();
+  } catch (error) {
+    console.log("Refund Request Error:", error);
+    showToast("Refund request failed", "error");
+  }
 }
 </script>
 

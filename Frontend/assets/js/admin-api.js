@@ -29,6 +29,107 @@ async function getChartStats() {
   return await response.json();
 }
 
+async function getAiAdminSummary() {
+  const endpoints = [
+    API_BASE_URL + "ai_admin_summary",
+    "http://127.0.0.1:8000/index.php?action=ai_admin_summary"
+  ];
+
+  let lastError = null;
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        credentials: "include"
+      });
+
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError;
+}
+
+async function askAiAssistant(message) {
+  const endpoints = [
+    API_BASE_URL + "ai_assistant",
+    "http://127.0.0.1:8000/index.php?action=ai_assistant"
+  ];
+
+  let lastError = null;
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({ message })
+      });
+
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError;
+}
+
+async function getAdminNotifications() {
+  const response = await fetch(API_BASE_URL + "get_admin_notifications", {
+    credentials: "include"
+  });
+
+  return await response.json();
+}
+
+async function getRefundRequests() {
+  const response = await fetch(API_BASE_URL + "get_refund_requests", {
+    credentials: "include"
+  });
+
+  return await response.json();
+}
+
+async function approveRefundRequest(refundId) {
+  const response = await fetch(API_BASE_URL + "approve_refund_request", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({ refund_id: refundId })
+  });
+
+  return await response.json();
+}
+
+async function getEventRequests() {
+  const response = await fetch(API_BASE_URL + "get_event_requests", {
+    credentials: "include"
+  });
+
+  return await response.json();
+}
+
+async function createEventQuote(data) {
+  const response = await fetch(API_BASE_URL + "create_event_quote", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify(data)
+  });
+
+  return await response.json();
+}
+
 async function uploadEventImage(file) {
   const formData = new FormData();
   formData.append("image", file);
@@ -137,6 +238,23 @@ async function updatePassword(data) {
     credentials: "include",
     body: JSON.stringify(data)
   });
+
+  return await response.json();
+}
+
+async function updatePaymentStatus(id, payment_status) {
+
+  const response = await fetch(
+    API_URL + "?action=update_payment_status",
+    {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({
+        id,
+        payment_status
+      })
+    }
+  );
 
   return await response.json();
 }

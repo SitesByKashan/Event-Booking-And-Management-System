@@ -14,6 +14,51 @@
 
   <style>
     body { font-family: 'Inter', sans-serif; }
+    @keyframes homeLift3d {
+      0%, 100% { transform: translate3d(0, 0, 0) rotateY(-10deg); }
+      50% { transform: translate3d(0, -10px, 26px) rotateY(8deg); }
+    }
+    @keyframes homeFadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .home-reveal { animation: homeFadeUp 620ms ease both; }
+    .home-3d-zone { perspective: 950px; transform-style: preserve-3d; }
+    .home-3d-ticket { animation: homeLift3d 6s ease-in-out infinite; transform-style: preserve-3d; }
+    .home-premium-card {
+      transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease;
+    }
+    .home-premium-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+      border-color: rgba(92, 124, 250, 0.35);
+    }
+    .event-line-clamp {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    @keyframes voiceWave {
+      0%, 100% { height: 10px; opacity: 0.45; }
+      50% { height: 30px; opacity: 1; }
+    }
+    .voice-bar {
+      width: 6px;
+      height: 10px;
+      border-radius: 999px;
+      background: #5C7CFA;
+      animation: voiceWave 1.1s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+    .voice-agent.listening .voice-bar,
+    .voice-agent.speaking .voice-bar {
+      animation-play-state: running;
+    }
+    .voice-agent.listening {
+      border-color: rgba(92, 124, 250, 0.45);
+      box-shadow: 0 28px 80px rgba(92, 124, 250, 0.16);
+    }
   </style>
 </head>
 
@@ -24,17 +69,178 @@
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full space-y-16">
 
-  <section class="space-y-5">
-    <h3 class="text-xs font-bold text-[#1E293B] tracking-wider uppercase text-left">
-      Browse By Category
-    </h3>
+  <section class="space-y-5 home-reveal">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <h3 class="text-xs font-bold text-[#1E293B] tracking-wider uppercase text-left">
+          Browse By Category
+        </h3>
+        <p class="text-sm text-slate-400 mt-2">Find live events by interest, city and audience type.</p>
+      </div>
+      <a href="events.html" class="hidden sm:inline-flex items-center gap-2 text-xs font-extrabold text-[#5C7CFA]">
+        Explore all
+        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      </a>
+    </div>
 
     <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
       <p class="text-sm text-slate-400">Loading categories...</p>
     </div>
   </section>
 
-  <section class="space-y-6">
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch home-reveal" style="animation-delay:80ms">
+    <div class="lg:col-span-2 bg-[#0F172A] text-white rounded-3xl overflow-hidden border border-slate-800 home-3d-zone relative">
+      <div class="home-3d-ticket hidden lg:block absolute right-10 top-8 z-10 w-44 rounded-3xl bg-white/90 text-[#0F172A] p-4 shadow-2xl">
+        <p class="text-[10px] font-black uppercase tracking-widest text-[#5C7CFA]">Live Demo</p>
+        <h4 class="text-xl font-black mt-1">Vendor Quotes</h4>
+        <p class="text-xs text-slate-500 mt-1">Request, compare, accept, chat.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 h-full">
+        <div class="p-7 space-y-5">
+          <span class="inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest bg-white/10 text-indigo-100 px-3 py-1 rounded-full">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            New
+          </span>
+          <div>
+            <h3 class="text-2xl font-black tracking-tight">Create your own event request</h3>
+            <p class="text-sm text-slate-300 mt-3 leading-relaxed">
+              Apni shadi, birthday ya corporate event ki requirements post karein aur vendor-style quotes receive karein.
+            </p>
+          </div>
+          <a href="custom-event.html" class="inline-flex items-center gap-2 bg-white text-[#0F172A] px-5 py-3 rounded-xl text-xs font-extrabold hover:bg-indigo-50">
+            Start Custom Request
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+        <div class="min-h-[260px] bg-cover bg-center"
+          style="background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=900&q=80');">
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-5 home-premium-card">
+      <h3 class="text-lg font-black text-[#0F172A]">How EventHub works</h3>
+      <div class="space-y-4">
+        <div class="flex gap-3">
+          <div class="w-9 h-9 rounded-xl bg-indigo-50 text-[#4B4EFC] flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-[#0F172A]">Discover</h4>
+            <p class="text-xs text-slate-400 mt-1">Events, categories and cities filter karein.</p>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-ticket text-xs"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-[#0F172A]">Book</h4>
+            <p class="text-xs text-slate-400 mt-1">Ticket select karein aur dummy payment complete karein.</p>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-handshake text-xs"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-[#0F172A]">Get Quotes</h4>
+            <p class="text-xs text-slate-400 mt-1">Custom request par vendor quotes compare karein.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-4 gap-4 home-reveal" style="animation-delay:120ms">
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 home-premium-card">
+      <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">AI Planner</p>
+      <h3 class="text-2xl font-black text-[#0F172A] mt-2">Smart</h3>
+      <p class="text-xs text-slate-400 mt-1">Budget and package suggestions</p>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 home-premium-card">
+      <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Marketplace</p>
+      <h3 class="text-2xl font-black text-[#0F172A] mt-2">Quotes</h3>
+      <p class="text-xs text-slate-400 mt-1">Vendors respond to custom requests</p>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 home-premium-card">
+      <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Payments</p>
+      <h3 class="text-2xl font-black text-[#0F172A] mt-2">Refunds</h3>
+      <p class="text-xs text-slate-400 mt-1">Admin approval workflow</p>
+    </div>
+    <div class="bg-[#0F172A] text-white border border-slate-800 rounded-2xl p-5 home-premium-card">
+      <p class="text-[10px] font-black uppercase tracking-widest text-indigo-200">Notifications</p>
+      <h3 class="text-2xl font-black mt-2">Live</h3>
+      <p class="text-xs text-slate-300 mt-1">Website and email alerts</p>
+    </div>
+  </section>
+
+  <section class="bg-white border border-slate-200 rounded-3xl p-6 lg:p-8 home-reveal" style="animation-delay:160ms">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+      <div class="lg:col-span-2">
+        <p class="text-[10px] uppercase tracking-widest font-black text-[#5C7CFA]">AI Event Concierge</p>
+        <h3 class="text-2xl lg:text-3xl font-black text-[#0F172A] mt-2">Plan faster with AI, then finalize with real vendors</h3>
+        <p class="text-sm text-slate-500 mt-3 leading-relaxed max-w-2xl">
+          AI assistant budget estimate, vendor checklist, refund workflow, OTP verification aur booking guidance explain karta hai. Custom request post karne ke baad vendors quotes bhejte hain aur accepted quote par messenger unlock hota hai.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="openHomeAiPrompt('Suggest wedding package in Karachi under Rs. 200000 for 200 guests')" class="home-premium-card bg-[#5C7CFA] text-white rounded-2xl p-4 text-left">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <p class="text-xs font-extrabold mt-3">Ask for package</p>
+        </button>
+        <button onclick="openHomeAiPrompt('Explain vendor quote workflow')" class="home-premium-card bg-slate-50 text-[#0F172A] border border-slate-200 rounded-2xl p-4 text-left">
+          <i class="fa-solid fa-handshake text-[#5C7CFA]"></i>
+          <p class="text-xs font-extrabold mt-3">Quote workflow</p>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="voice-agent home-reveal bg-[#0F172A] text-white border border-slate-800 rounded-3xl p-6 lg:p-8 overflow-hidden relative" style="animation-delay:180ms" id="homeVoiceAgent">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center relative z-10">
+      <div class="lg:col-span-2">
+        <p class="text-[10px] uppercase tracking-widest font-black text-indigo-200">AI Voice Agent</p>
+        <h3 class="text-2xl lg:text-3xl font-black mt-2">Talk to EventHub like a real event consultant</h3>
+        <p class="text-sm text-slate-300 mt-3 leading-relaxed max-w-2xl">
+          Voice agent se event package, budget estimate, booking help, vendor quote workflow aur refund process ask karein. Browser microphone permission allow karna hoga.
+        </p>
+
+        <div class="mt-5 bg-white/10 border border-white/10 rounded-2xl p-4">
+          <p class="text-[10px] uppercase tracking-widest text-slate-300 font-black">You said</p>
+          <p id="voiceTranscript" class="text-sm text-white mt-2 min-h-[1.5rem]">Press Start Voice and ask a question.</p>
+          <p class="text-[10px] uppercase tracking-widest text-slate-300 font-black mt-4">AI reply</p>
+          <p id="voiceReply" class="text-sm text-slate-300 mt-2 min-h-[2.5rem] leading-relaxed">Ready for your voice command.</p>
+        </div>
+      </div>
+
+      <div class="bg-white text-[#0F172A] rounded-3xl p-6 shadow-2xl">
+        <div class="flex items-end justify-center gap-2 h-16">
+          <span class="voice-bar"></span>
+          <span class="voice-bar" style="animation-delay:.12s"></span>
+          <span class="voice-bar" style="animation-delay:.24s"></span>
+          <span class="voice-bar" style="animation-delay:.36s"></span>
+          <span class="voice-bar" style="animation-delay:.48s"></span>
+        </div>
+        <p id="voiceStatus" class="text-center text-xs font-extrabold text-slate-400 mt-4">Voice agent idle</p>
+        <div class="grid grid-cols-2 gap-2 mt-5">
+          <button id="startVoiceBtn" type="button" onclick="startVoiceAgent()" class="bg-[#5C7CFA] text-white rounded-2xl py-3 text-xs font-extrabold">
+            <i class="fa-solid fa-microphone mr-1"></i>
+            Start Voice
+          </button>
+          <button type="button" onclick="stopVoiceAgent()" class="bg-slate-100 text-slate-600 rounded-2xl py-3 text-xs font-extrabold">
+            <i class="fa-solid fa-stop mr-1"></i>
+            Stop
+          </button>
+        </div>
+        <button type="button" onclick="voiceQuickDemo()" class="mt-3 w-full bg-[#0F172A] text-white rounded-2xl py-3 text-xs font-extrabold">
+          Demo Question
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="space-y-6 home-reveal" style="animation-delay:200ms">
     <div class="flex items-center justify-between border-b border-gray-100 pb-4">
       <div class="space-y-0.5 text-left">
         <h3 class="text-lg font-bold text-[#1E293B] tracking-tight">
@@ -56,7 +262,7 @@
     </div>
   </section>
 
-  <section class="space-y-5 bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+  <section class="space-y-5 bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)] home-reveal" style="animation-delay:240ms">
     <h3 class="text-xs font-bold text-gray-400 tracking-wider uppercase text-left">
       Popular Organizers
     </h3>
@@ -109,6 +315,7 @@
 
 <script src="js/app.js"></script>
 <script src="../assets/js/user-api.js"></script>
+<script src="../assets/js/ai-chatbot.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
@@ -158,7 +365,7 @@ async function loadHomeCategories() {
       grid.innerHTML += `
         <button
           onclick="filterHomeEvents('${category.name}')"
-          class="flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-md hover:border-[#5C7CFA] transition-all group cursor-pointer">
+          class="home-premium-card flex flex-col items-center justify-center p-5 bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.01)] group cursor-pointer">
 
           <div class="w-12 h-12 bg-[#EEF2FF] rounded-xl flex items-center justify-center text-[#5C7CFA] mb-2 group-hover:bg-[#5C7CFA] group-hover:text-white transition-all">
             <i class="fa-solid ${icons[index % icons.length]} text-base"></i>
@@ -214,18 +421,20 @@ function renderHomeEvents(events) {
   grid.innerHTML = "";
 
   events.forEach(event => {
-    const image = event.image
-      ? `http://localhost:8000/${event.image}`
-      : "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600";
+    const image = getProfessionalEventImage(event);
 
     const price = Number(event.price || 0);
     const priceText = price === 0 ? "Free" : "Rs. " + price;
 
     grid.innerHTML += `
-      <div class="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between text-left group hover:shadow-lg transition-all duration-300 relative w-full">
+      <div class="home-premium-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between text-left group relative w-full">
 
         <div class="relative w-full h-44 bg-slate-50 overflow-hidden">
-          <img src="${image}" class="w-full h-full object-cover">
+          <img src="${image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+          <div class="absolute top-3 left-3 bg-white/95 text-[#0F172A] text-[10px] font-black px-3 py-1 rounded-full shadow">
+            ${formatEventDate(event.event_date)}
+          </div>
 
           <div class="absolute bottom-3 left-3 bg-[#5C7CFA] text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase">
             ${event.category_name || "General"}
@@ -247,6 +456,10 @@ function renderHomeEvents(events) {
             <h3 class="text-sm font-bold text-[#0F172A] mt-1">
               ${event.title}
             </h3>
+
+            <p class="event-line-clamp text-[11px] text-slate-400 leading-relaxed mt-2">
+              ${event.description || "Professional event experience with curated services and managed entry."}
+            </p>
 
             <div class="space-y-1.5 text-[11px] font-medium text-gray-400 pt-2">
               <div>
@@ -274,7 +487,7 @@ function renderHomeEvents(events) {
 
             <button
               onclick="window.location.href='events.html'"
-              class="bg-[#5C7CFA] hover:bg-[#4C6EF5] text-white text-xs font-bold px-4 py-2 rounded-lg">
+              class="bg-[#5C7CFA] hover:bg-[#4C6EF5] text-white text-xs font-bold px-4 py-2 rounded-xl">
               Book Now
             </button>
           </div>
@@ -322,6 +535,349 @@ function filterHomeEvents(keyword) {
   });
 
   renderHomeEvents(filtered);
+}
+
+function formatEventDate(dateValue) {
+  if (!dateValue) return "Upcoming";
+  const date = new Date(dateValue + "T00:00:00");
+  if (Number.isNaN(date.getTime())) return dateValue;
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function getProfessionalEventImage(event) {
+  const category = (event.category_name || "").toLowerCase();
+  const uploaded = String(event.image || "");
+
+  if (uploaded && !uploaded.toLowerCase().includes("oip")) {
+    if (uploaded.startsWith("http://") || uploaded.startsWith("https://")) {
+      return uploaded;
+    }
+
+    return `http://localhost:8000/${uploaded}`;
+  }
+
+  if (category.includes("technology")) {
+    return "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=900&q=80";
+  }
+
+  if (category.includes("music")) {
+    return "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=900&q=80";
+  }
+
+  if (category.includes("sports")) {
+    return "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=900&q=80";
+  }
+
+  if (category.includes("education")) {
+    return "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=80";
+  }
+
+  if (category.includes("business")) {
+    return "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=900&q=80";
+  }
+
+  return "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=900&q=80";
+}
+
+function openHomeAiPrompt(prompt) {
+  const launcher = document.getElementById("eventhubAiLauncher");
+  const panel = document.getElementById("eventhubAiPanel");
+  const input = document.getElementById("eventhubAiInput");
+
+  if (panel && panel.classList.contains("hidden")) {
+    launcher?.click();
+  }
+
+  if (input) {
+    input.value = prompt;
+    input.focus();
+  }
+}
+
+let homeVoiceRecognition = null;
+let homeVoiceBusy = false;
+
+function getVoiceRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    return null;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-PK";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  return recognition;
+}
+
+function setVoiceState(state, status) {
+  const agent = document.getElementById("homeVoiceAgent");
+  const statusBox = document.getElementById("voiceStatus");
+
+  agent?.classList.remove("listening", "speaking");
+
+  if (state) {
+    agent?.classList.add(state);
+  }
+
+  if (statusBox) {
+    statusBox.innerText = status;
+  }
+}
+
+function startVoiceAgent() {
+  if (homeVoiceBusy) return;
+
+  const recognition = getVoiceRecognition();
+
+  if (!recognition) {
+    document.getElementById("voiceStatus").innerText = "Voice not supported in this browser";
+    document.getElementById("voiceReply").innerText = "Chrome ya Edge browser mein voice agent best work karega.";
+    return;
+  }
+
+  homeVoiceRecognition = recognition;
+  setVoiceState("listening", "Listening...");
+  document.getElementById("voiceTranscript").innerText = "Listening for your question...";
+
+  recognition.onresult = async (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("voiceTranscript").innerText = transcript;
+    await answerVoiceQuestion(transcript);
+  };
+
+  recognition.onerror = () => {
+    setVoiceState("", "Microphone error or permission denied");
+    document.getElementById("voiceReply").innerText = "Mic permission allow karein, phir Start Voice dobara press karein.";
+    homeVoiceBusy = false;
+  };
+
+  recognition.onend = () => {
+    if (!homeVoiceBusy) {
+      setVoiceState("", "Voice agent idle");
+    }
+  };
+
+  recognition.start();
+}
+
+function stopVoiceAgent() {
+  if (homeVoiceRecognition) {
+    homeVoiceRecognition.stop();
+  }
+
+  window.speechSynthesis?.cancel();
+  homeVoiceBusy = false;
+  setVoiceState("", "Voice agent stopped");
+}
+
+async function answerVoiceQuestion(question) {
+  homeVoiceBusy = true;
+  setVoiceState("speaking", "AI thinking...");
+  document.getElementById("voiceReply").innerText = "AI is preparing your answer...";
+
+  try {
+    const actionHandled = await handleVoiceAction(question);
+
+    if (actionHandled) {
+      return;
+    }
+
+    const response = await askAiAssistant(question);
+    const answer = response.status
+      ? response.data.reply
+      : response.message || "AI assistant is not available right now.";
+
+    document.getElementById("voiceReply").innerText = answer;
+    speakVoiceAnswer(answer);
+  } catch (error) {
+    console.log("Voice Agent Error:", error);
+    const fallback = "AI voice agent connect nahi ho saka. Backend server running hona chahiye.";
+    document.getElementById("voiceReply").innerText = fallback;
+    speakVoiceAnswer(fallback);
+  }
+}
+
+async function handleVoiceAction(question) {
+  const text = String(question || "").toLowerCase();
+
+  if (containsVoiceWords(text, ["vendor quote", "send quote", "quotation", "quote send"])) {
+    const quoteDraft = {
+      amount: extractAmount(text) || "",
+      contact: "",
+      message: buildVendorQuoteMessage(question),
+      query: cleanVoiceQuery(text, ["vendor", "quote", "quotation", "send", "for"])
+    };
+
+    localStorage.setItem("eventhubVoiceVendorQuote", JSON.stringify(quoteDraft));
+    const reply = "Vendor Desk open kar raha hu. Main first matching request ka quote form prefill kar dunga; final Send Quote aap manually click karein.";
+    document.getElementById("voiceReply").innerText = reply;
+    speakVoiceAnswer(reply);
+    setTimeout(() => window.location.href = "vendor-requests.html", 1400);
+    return true;
+  }
+
+  if (containsVoiceWords(text, ["create event", "custom event", "event request", "create request", "post event"])) {
+    const draft = buildCustomEventDraft(question);
+    localStorage.setItem("eventhubVoiceEventDraft", JSON.stringify(draft));
+    const reply = "Custom Event Request page open kar raha hu. AI aapka form prefill karega; final Post Request aap confirm karke click karein.";
+    document.getElementById("voiceReply").innerText = reply;
+    speakVoiceAnswer(reply);
+    setTimeout(() => window.location.href = "custom-event.html", 1400);
+    return true;
+  }
+
+  if (containsVoiceWords(text, ["book", "reserve", "ticket"])) {
+    const bookingIntent = {
+      query: cleanVoiceQuery(text, ["book", "reserve", "ticket", "tickets", "event", "for", "me"]),
+      tickets: extractTickets(text) || 1
+    };
+
+    localStorage.setItem("eventhubVoiceBookingIntent", JSON.stringify(bookingIntent));
+    const reply = "Events page open kar raha hu. Main matching event search karke booking modal open kar dunga; final payment aap confirm karein.";
+    document.getElementById("voiceReply").innerText = reply;
+    speakVoiceAnswer(reply);
+    setTimeout(() => window.location.href = "events.html", 1400);
+    return true;
+  }
+
+  if (containsVoiceWords(text, ["search", "find", "show", "events", "event"])) {
+    const query = cleanVoiceQuery(text, ["search", "find", "show", "events", "event", "near", "me"]);
+    const finalQuery = query || text;
+
+    if (homeEvents.length > 0) {
+      filterHomeEvents(finalQuery);
+      const reply = `Main ne "${finalQuery}" ke matching events home page par filter kar diye hain.`;
+      document.getElementById("voiceReply").innerText = reply;
+      speakVoiceAnswer(reply);
+    } else {
+      const reply = "Events page open kar raha hu jahan search results show honge.";
+      document.getElementById("voiceReply").innerText = reply;
+      speakVoiceAnswer(reply);
+      setTimeout(() => window.location.href = `events.html?search=${encodeURIComponent(finalQuery)}`, 1200);
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+function containsVoiceWords(text, words) {
+  return words.some((word) => text.includes(word));
+}
+
+function extractAmount(text) {
+  const match = text.match(/(?:rs|pkr|rupees|under|budget|amount)?\s*(\d{4,8})/i);
+  return match ? Number(match[1]) : 0;
+}
+
+function extractTickets(text) {
+  const numericMatch = text.match(/(\d{1,3})\s*(ticket|tickets|seat|seats)/i);
+
+  if (numericMatch) {
+    return Number(numericMatch[1]);
+  }
+
+  const numberWords = {
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    for: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9,
+    ten: 10
+  };
+
+  const wordMatch = text.match(/\b(one|two|three|four|for|five|six|seven|eight|nine|ten)\s*(ticket|tickets|seat|seats)\b/i);
+  return wordMatch ? numberWords[wordMatch[1].toLowerCase()] : 1;
+}
+
+function cleanVoiceQuery(text, removeWords) {
+  let query = text;
+  removeWords.forEach((word) => {
+    query = query.replace(new RegExp(`\\b${word}\\b`, "gi"), " ");
+  });
+
+  return query
+    .replace(/\b(please|kindly|aik|ek|mere|meri|mujhe|karna|kardo|ke|liye|ka|ki|ko)\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function buildCustomEventDraft(question) {
+  const text = String(question || "").toLowerCase();
+  const amount = extractAmount(text) || 150000;
+  const guests = extractGuestCountFromVoice(text) || 100;
+  const type = detectEventTypeFromVoice(text);
+  const city = detectCityFromVoice(text) || "Karachi";
+
+  return {
+    event_type: type,
+    city,
+    guests,
+    budget: amount,
+    requirements: question
+  };
+}
+
+function detectEventTypeFromVoice(text) {
+  if (text.includes("wedding") || text.includes("shadi") || text.includes("shaadi")) return "Wedding";
+  if (text.includes("birthday")) return "Birthday";
+  if (text.includes("corporate") || text.includes("business")) return "Corporate";
+  if (text.includes("conference") || text.includes("seminar")) return "Conference";
+  return "Private Party";
+}
+
+function detectCityFromVoice(text) {
+  const cities = ["karachi", "lahore", "islamabad", "rawalpindi", "hyderabad", "multan"];
+  const city = cities.find((item) => text.includes(item));
+  return city ? city.charAt(0).toUpperCase() + city.slice(1) : "";
+}
+
+function extractGuestCountFromVoice(text) {
+  const match = text.match(/(\d{1,5})\s*(guest|guests|people|persons)/i);
+  return match ? Number(match[1]) : 0;
+}
+
+function buildVendorQuoteMessage(question) {
+  const amount = extractAmount(String(question || "").toLowerCase());
+  const base = "Professional package includes planning coordination, decor setup, vendor management, timeline support and event-day execution.";
+  return amount ? `${base} Estimated quote: Rs. ${amount}.` : `${base} Final pricing depends on guests, venue and selected services.`;
+}
+
+function speakVoiceAnswer(answer) {
+  if (!window.speechSynthesis) {
+    setVoiceState("", "Voice reply not supported");
+    homeVoiceBusy = false;
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  const cleanAnswer = String(answer).replace(/\n/g, ". ").slice(0, 650);
+  const utterance = new SpeechSynthesisUtterance(cleanAnswer);
+  utterance.lang = "en-US";
+  utterance.rate = 0.95;
+  utterance.pitch = 1;
+
+  utterance.onstart = () => setVoiceState("speaking", "AI speaking...");
+  utterance.onend = () => {
+    homeVoiceBusy = false;
+    setVoiceState("", "Voice agent idle");
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+async function voiceQuickDemo() {
+  const demoQuestion = "Suggest a wedding package in Karachi for 200 guests under 200000 rupees";
+  document.getElementById("voiceTranscript").innerText = demoQuestion;
+  await answerVoiceQuestion(demoQuestion);
 }
 </script>
 

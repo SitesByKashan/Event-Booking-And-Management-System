@@ -1,72 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifications | EventHub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | EventHub</title>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #F8FAFC;
-        }
-    </style>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }
+  </style>
 </head>
 
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen text-[#1E293B]">
 
-    <script>
-        const loggedUser = JSON.parse(localStorage.getItem("user"));
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
 
-        if (!loggedUser) {
-            window.location.href = "login.html";
-        }
-    </script>
+if (!loggedUser) {
+  window.location.href = "login.html";
+}
+</script>
 
-    <div id="navbar"></div>
+<div id="navbar"></div>
 
-    <main class="flex-grow max-w-5xl mx-auto w-full py-10 px-6">
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <h1 class="text-3xl font-extrabold text-[#0F172A] flex items-center gap-3">
-                    <i class="fa-regular fa-bell text-blue-600"></i> Notifications
-                </h1>
-                <p class="text-slate-500 font-medium mt-2">You have 2 unread notifications</p>
+<main class="flex-grow max-w-6xl mx-auto w-full py-10 px-6 space-y-6">
+  <section class="bg-[#0F172A] text-white rounded-3xl p-8 border border-slate-800">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <div>
+        <p class="text-[10px] uppercase tracking-widest text-indigo-200 font-bold">Notification Center</p>
+        <h1 class="text-3xl font-black mt-2">Stay updated across bookings, quotes and chats</h1>
+        <p id="notificationSubText" class="text-sm text-slate-300 mt-2">Loading notifications...</p>
+      </div>
+      <button onclick="handleMarkRead()" class="bg-white text-[#0F172A] px-5 py-3 rounded-xl text-sm font-bold">
+        Mark all read
+      </button>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <p class="text-[10px] font-bold uppercase text-slate-400">Unread</p>
+      <h3 id="unreadCount" class="text-3xl font-black text-[#0F172A] mt-2">0</h3>
+    </div>
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <p class="text-[10px] font-bold uppercase text-slate-400">Total</p>
+      <h3 id="totalNotificationCount" class="text-3xl font-black text-[#0F172A] mt-2">0</h3>
+    </div>
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <p class="text-[10px] font-bold uppercase text-slate-400">Email</p>
+      <h3 class="text-sm font-black text-[#0F172A] mt-3">Email logs are generated on backend</h3>
+    </div>
+  </section>
+
+  <section id="notificationsContainer" class="space-y-4">
+    <p class="text-sm text-slate-400">Loading notifications...</p>
+  </section>
+</main>
+
+<div id="Footer"></div>
+
+<script src="js/app.js"></script>
+<script src="../assets/js/user-api.js"></script>
+<script src="../assets/js/ai-chatbot.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+load("navbar", "Components/navbar.html").then(() => {
+  updateUserNavbar();
+  setActiveNavbarLink();
+});
+load("Footer", "Components/Footer.html");
+
+document.addEventListener("DOMContentLoaded", loadNotifications);
+
+async function loadNotifications() {
+  const container = document.getElementById("notificationsContainer");
+  container.innerHTML = `<p class="text-sm text-slate-400">Loading notifications...</p>`;
+
+  try {
+    const response = await getNotifications();
+
+    if (!response.status) {
+      container.innerHTML = `<p class="text-sm text-red-500">${response.message}</p>`;
+      return;
+    }
+
+    const items = response.data || [];
+    document.getElementById("unreadCount").innerText = response.unread_count || 0;
+    document.getElementById("totalNotificationCount").innerText = items.length;
+    document.getElementById("notificationSubText").innerText =
+      `${response.unread_count || 0} unread notification${Number(response.unread_count || 0) === 1 ? "" : "s"}`;
+
+    if (items.length === 0) {
+      container.innerHTML = `<div class="bg-white border border-slate-200 rounded-2xl py-16 text-center text-slate-400 text-sm font-semibold">No notifications yet</div>`;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    items.forEach((item) => {
+      const icon = iconForType(item.type);
+      const unread = Number(item.is_read) === 0;
+
+      container.innerHTML += `
+        <article class="bg-white p-5 rounded-2xl border ${unread ? "border-[#4B4EFC]/30" : "border-slate-200"} shadow-sm flex items-start gap-4">
+          <div class="w-11 h-11 rounded-xl ${icon.bg} ${icon.color} flex items-center justify-center shrink-0">
+            <i class="${icon.icon}"></i>
+          </div>
+          <div class="flex-grow">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h3 class="font-extrabold text-[#0F172A]">${item.title}</h3>
+              <span class="text-xs text-slate-400">${item.created_at}</span>
             </div>
-            <i class="fa-solid fa-gear text-slate-400 text-xl cursor-pointer"></i>
-        </div>
+            <p class="text-sm text-slate-500 mt-1 leading-relaxed">${item.message}</p>
+            ${unread ? `<span class="inline-flex mt-3 text-[10px] font-bold uppercase tracking-wider text-[#4B4EFC] bg-indigo-50 px-2.5 py-1 rounded-full">New</span>` : ""}
+          </div>
+        </article>
+      `;
+    });
+  } catch (error) {
+    console.log("Notifications Error:", error);
+    container.innerHTML = `<p class="text-sm text-red-500">Failed to load notifications</p>`;
+  }
+}
 
-        <div class="space-y-4">
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-start gap-4">
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-regular fa-calendar text-xl"></i>
-                </div>
-                <div class="flex-grow">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-slate-900">Event Reminder</h3>
-                        <span class="text-xs text-slate-400">2 hours ago</span>
-                    </div>
-                    <p class="text-sm text-slate-500 mt-1">Champions League Final starts in 2 days.</p>
-                </div>
-            </div>
-        </div>
-    </main>
+function iconForType(type) {
+  const map = {
+    quote: { icon: "fa-solid fa-file-invoice-dollar", bg: "bg-indigo-50", color: "text-[#4B4EFC]" },
+    accepted: { icon: "fa-solid fa-circle-check", bg: "bg-emerald-50", color: "text-emerald-600" },
+    message: { icon: "fa-solid fa-message", bg: "bg-sky-50", color: "text-sky-600" },
+    refund: { icon: "fa-solid fa-rotate-left", bg: "bg-amber-50", color: "text-amber-600" },
+    booking: { icon: "fa-solid fa-ticket", bg: "bg-red-50", color: "text-red-600" },
+    vendor: { icon: "fa-solid fa-store", bg: "bg-violet-50", color: "text-violet-600" }
+  };
 
-    <div id="Footer"></div>
+  return map[type] || { icon: "fa-regular fa-bell", bg: "bg-slate-50", color: "text-slate-600" };
+}
 
-    <script src="js/app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script>
-        load("navbar", "Components/navbar.html").then(() => {
-            updateUserNavbar();
-        });
-        load("Footer", "Components/Footer.html");
-    </script>
+async function handleMarkRead() {
+  const response = await markNotificationsRead();
+  showToast(response.message, response.status ? "success" : "error");
+  loadNotifications();
+  updateNotificationBadge();
+}
+</script>
+
 </body>
-
 </html>

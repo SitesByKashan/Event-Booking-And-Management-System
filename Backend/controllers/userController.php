@@ -2,6 +2,8 @@
 
 require_once __DIR__ . "/../config/db.php";
 require_once __DIR__ . "/../models/User.php";
+require_once __DIR__ . "/../middleware/authMiddleware.php";
+require_once __DIR__ . "/../models/Notification.php";
 
 function getUsers() {
     global $conn;
@@ -19,7 +21,7 @@ function getUsers() {
 function getProfile() {
     global $conn;
 
-    session_start();
+    startSessionSafe();
 
     if (!isset($_SESSION['user_id'])) {
         echo json_encode([
@@ -41,7 +43,7 @@ function getProfile() {
 function updateProfile() {
     global $conn;
 
-    session_start();
+    startSessionSafe();
 
     if (!isset($_SESSION['user_id'])) {
         echo json_encode([
@@ -66,7 +68,7 @@ function updateProfile() {
 function updatePassword() {
     global $conn;
 
-    session_start();
+    startSessionSafe();
 
     if (!isset($_SESSION['user_id'])) {
         echo json_encode([
@@ -96,5 +98,41 @@ function updatePassword() {
     echo json_encode([
         "status" => true,
         "message" => "Password updated successfully"
+    ]);
+}
+
+function becomeVendor() {
+    global $conn;
+
+    startSessionSafe();
+
+    if (!isset($_SESSION['user_id'])) {
+        echo json_encode([
+            "status" => false,
+            "message" => "Please login first"
+        ]);
+        return;
+    }
+
+    $userModel = new User($conn);
+    $updated = $userModel->updateRole($_SESSION['user_id'], "vendor");
+
+    if ($updated) {
+        $_SESSION['role'] = "vendor";
+        $notificationModel = new Notification($conn);
+        $notificationModel->createAndEmail(
+            $userModel->findById($_SESSION['user_id']),
+            "Vendor mode activated",
+            "You can now receive event requests and send quotations from Vendor Desk.",
+            "vendor"
+        );
+    }
+
+    echo json_encode([
+        "status" => (bool) $updated,
+        "message" => $updated ? "Vendor mode activated successfully" : "Vendor mode activation failed",
+        "data" => [
+            "role" => "vendor"
+        ]
     ]);
 }

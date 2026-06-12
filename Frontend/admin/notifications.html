@@ -83,6 +83,7 @@ if (!loggedUser || loggedUser.role !== "admin") {
     </div>
 
     <script src="../assets/js/admin-api.js"></script>
+    <script src="../assets/js/ai-chatbot.js"></script>
     <script src="js/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
@@ -99,53 +100,23 @@ if (!loggedUser || loggedUser.role !== "admin") {
         });
 
         async function loadNotificationStats() {
-            const bookingsRes = await getBookings();
-            const usersRes = await getUsers();
+            const notifRes = await getAdminNotifications();
 
-            const bookings = bookingsRes.status ? bookingsRes.data : [];
-            const users = usersRes.status ? usersRes.data : [];
+            const notifications = notifRes.status ? notifRes.data : [];
 
-            const highPriority = bookings.filter(b => b.status !== "confirmed").length;
+            const highPriority = notifications.filter(n => ["refund", "quote", "accepted"].includes(n.type)).length;
 
-            document.getElementById("notifBookings").innerText = bookings.length;
-            document.getElementById("notifUsers").innerText = users.length;
+            document.getElementById("notifBookings").innerText = notifications.filter(n => n.type === "booking").length;
+            document.getElementById("notifUsers").innerText = notifications.filter(n => n.type === "account" || n.type === "vendor").length;
             document.getElementById("notifHighPriority").innerText = highPriority;
-            document.getElementById("notifTotal").innerText =
-                bookings.length + users.length;
+            document.getElementById("notifTotal").innerText = notifications.length;
         }
 
         async function loadNotifications() {
             const container = document.getElementById("notificationList");
 
-            const bookingsRes = await getBookings();
-            const usersRes = await getUsers();
-
-            const bookings = bookingsRes.status ? bookingsRes.data : [];
-            const users = usersRes.status ? usersRes.data : [];
-
-            const notifications = [];
-
-            bookings.slice(0, 5).forEach((booking) => {
-                notifications.push({
-                    title: "New Booking Created",
-                    type: "Booking",
-                    message: `${booking.user_name} booked ${booking.tickets} tickets for "${booking.event_title}".`,
-                    time: booking.created_at,
-                    icon: "fas fa-calendar-check",
-                    color: "text-indigo-500"
-                });
-            });
-
-            users.slice(0, 3).forEach((user) => {
-                notifications.push({
-                    title: "New User Registered",
-                    type: "Account",
-                    message: `${user.name} created an account with email ${user.email}.`,
-                    time: user.created_at || "Recently",
-                    icon: "fas fa-user-plus",
-                    color: "text-purple-500"
-                });
-            });
+            const notifRes = await getAdminNotifications();
+            const notifications = notifRes.status ? notifRes.data : [];
 
             if (notifications.length === 0) {
                 container.innerHTML = `
@@ -159,10 +130,11 @@ if (!loggedUser || loggedUser.role !== "admin") {
             container.innerHTML = "";
 
             notifications.forEach((notif) => {
+                const icon = iconForType(notif.type);
                 container.innerHTML += `
-      <div class="flex items-center p-5 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-[#1f2140] transition-all duration-300">
-        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center ${notif.color} mr-4">
-          <i class="${notif.icon} text-lg"></i>
+      <div class="notification-row flex items-center p-5 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-[#1f2140] transition-all duration-300">
+        <div class="flex-shrink-0 w-10 h-10 rounded-xl ${icon.bg} ${icon.color} flex items-center justify-center mr-4">
+          <i class="${icon.icon} text-lg"></i>
         </div>
 
         <div class="flex-1 min-w-0">
@@ -171,7 +143,7 @@ if (!loggedUser || loggedUser.role !== "admin") {
               ${notif.title}
             </h5>
             <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded">
-              ${notif.type}
+              ${notif.type || "info"}
             </span>
           </div>
 
@@ -182,7 +154,7 @@ if (!loggedUser || loggedUser.role !== "admin") {
 
         <div class="flex items-center gap-4 ml-4">
           <span class="text-xs text-slate-400">
-            ${notif.time}
+            ${notif.user_name || "User"} • ${notif.created_at}
           </span>
 
           <div class="flex items-center gap-1">
@@ -204,6 +176,20 @@ if (!loggedUser || loggedUser.role !== "admin") {
       </div>
     `;
             });
+        }
+
+        function iconForType(type) {
+            const map = {
+                booking: { icon: "fas fa-ticket", bg: "bg-indigo-50", color: "text-indigo-500" },
+                refund: { icon: "fas fa-rotate-left", bg: "bg-amber-50", color: "text-amber-600" },
+                quote: { icon: "fas fa-file-invoice-dollar", bg: "bg-violet-50", color: "text-violet-600" },
+                accepted: { icon: "fas fa-circle-check", bg: "bg-emerald-50", color: "text-emerald-600" },
+                message: { icon: "fas fa-message", bg: "bg-sky-50", color: "text-sky-600" },
+                account: { icon: "fas fa-user-check", bg: "bg-purple-50", color: "text-purple-600" },
+                vendor: { icon: "fas fa-store", bg: "bg-rose-50", color: "text-rose-600" }
+            };
+
+            return map[type] || { icon: "fas fa-bell", bg: "bg-slate-100", color: "text-slate-500" };
         }
 
         function markAsRead(button) {

@@ -115,7 +115,13 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   const response = await loginUser(email, password);
 
   if (!response.status) {
-    showToast(response.message);
+    showToast(response.message, "error");
+
+    if (response.requires_verification && response.email) {
+      localStorage.setItem("pendingVerificationEmail", response.email);
+      window.location.href = "signup.html?verify=" + encodeURIComponent(response.email);
+    }
+
     return;
   }
 

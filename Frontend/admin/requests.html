@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Event Requests - EventHub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-[#f8fafc] text-slate-600 antialiased overflow-hidden">
+
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("user"));
+
+if (!loggedUser || loggedUser.role !== "admin") {
+  window.location.href = "../user/login.html";
+}
+</script>
+
+<div class="flex h-screen w-screen overflow-hidden">
+  <div id="sidebar" class="shrink-0 transition-all duration-300"></div>
+
+  <div class="flex-1 flex flex-col h-full overflow-hidden min-w-0 transition-all duration-300">
+    <div id="navbar"></div>
+
+    <main class="flex-1 p-8 space-y-6 overflow-y-auto">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-[#1e293b]">Custom Event Requests</h1>
+          <p class="text-sm text-slate-400 mt-0.5">Monitor customer requests and vendor quotation activity.</p>
+        </div>
+
+        <button onclick="loadRequests()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+          Refresh
+        </button>
+      </div>
+
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+          <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Open Requests</p>
+          <h3 id="openRequestsCount" class="text-3xl font-black text-[#0F172A] mt-2">0</h3>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+          <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Total Quotes</p>
+          <h3 id="totalQuotesCount" class="text-3xl font-black text-[#0F172A] mt-2">0</h3>
+        </div>
+        <div class="bg-[#0F172A] text-white border border-slate-800 rounded-2xl p-5">
+          <p class="text-[10px] uppercase tracking-widest text-indigo-200 font-bold">AI Tip</p>
+          <p class="text-sm text-slate-300 mt-2">Admin yahan marketplace activity monitor karega; quote vendor desk se send hoga.</p>
+          <button type="button" onclick="openAiWithPrompt('Summarize custom event requests and vendor quotation workflow for admin')" class="mt-4 bg-white text-[#0F172A] rounded-xl px-4 py-2 text-xs font-extrabold">
+            Ask AI
+          </button>
+        </div>
+      </section>
+
+      <section id="requestsContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+        <p class="text-sm text-slate-400">Loading requests...</p>
+      </section>
+
+      <section class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <h2 class="text-lg font-extrabold text-[#0F172A]">Vendor Quote Activity</h2>
+        <p class="text-sm text-slate-400 mt-1 mb-4">Kis vendor ne kis request par quote bheja aur status kya hai.</p>
+        <div id="quotesActivityContainer" class="space-y-3">
+          <p class="text-sm text-slate-400">Loading quote activity...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/admin-api.js"></script>
+<script src="../assets/js/ai-chatbot.js"></script>
+<script src="js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+load("sidebar", "Components/sidebar.html?v=11", "requests");
+load("navbar", "Components/navbar.html");
+
+document.addEventListener("DOMContentLoaded", loadRequests);
+
+function openAiWithPrompt(prompt) {
+  const launcher = document.getElementById("eventhubAiLauncher");
+  const panel = document.getElementById("eventhubAiPanel");
+  const input = document.getElementById("eventhubAiInput");
+
+  if (panel && panel.classList.contains("hidden")) {
+    launcher?.click();
+  }
+
+  if (input) {
+    input.value = prompt;
+    input.focus();
+  }
+}
+
+async function loadRequests() {
+  const container = document.getElementById("requestsContainer");
+  container.innerHTML = `<p class="text-sm text-slate-400">Loading requests...</p>`;
+
+  try {
+    const response = await getEventRequests();
+
+    if (!response.status) {
+      container.innerHTML = `<p class="text-sm text-red-500">${response.message}</p>`;
+      return;
+    }
+
+    const requests = response.data || [];
+    const quotes = response.quotes || [];
+    document.getElementById("openRequestsCount").innerText = requests.length;
+    document.getElementById("totalQuotesCount").innerText =
+      requests.reduce((total, item) => total + Number(item.quote_count || 0), 0);
+    renderQuotesActivity(quotes);
+
+    if (requests.length === 0) {
+      container.innerHTML = `<div class="col-span-full text-center py-20 text-slate-400 font-semibold">No custom event requests yet</div>`;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    requests.forEach((item) => {
+      container.innerHTML += `
+        <article class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <span class="px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-bold uppercase">${item.event_type}</span>
+              <h3 class="text-lg font-extrabold text-[#0F172A] mt-3">${item.city} event for ${item.guests} guests</h3>
+              <p class="text-xs text-slate-400 mt-1">${item.user_name} • ${item.user_email}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[10px] text-slate-400 font-bold uppercase">Budget</p>
+              <h4 class="text-base font-black text-[#0F172A]">Rs. ${item.budget}</h4>
+            </div>
+          </div>
+
+          <p class="text-sm text-slate-500 leading-relaxed bg-slate-50 border border-slate-100 rounded-xl p-3">
+            ${item.requirements}
+          </p>
+
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-slate-50 rounded-xl p-3">
+              <p class="text-[10px] text-slate-400 font-bold uppercase">Date</p>
+              <p class="text-xs font-bold text-slate-700 mt-1">${item.event_date || "Flexible"}</p>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3">
+              <p class="text-[10px] text-slate-400 font-bold uppercase">Quotes</p>
+              <p class="text-xs font-bold text-slate-700 mt-1">${item.quote_count || 0}</p>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3">
+              <p class="text-[10px] text-slate-400 font-bold uppercase">Status</p>
+              <p class="text-xs font-bold text-emerald-600 mt-1">${item.status}</p>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-100 pt-4 text-xs text-slate-400">
+            Vendor quotes are sent from the user-side Vendor Desk.
+          </div>
+        </article>
+      `;
+    });
+  } catch (error) {
+    console.log("Requests Load Error:", error);
+    container.innerHTML = `<p class="text-sm text-red-500">Failed to load requests</p>`;
+  }
+}
+
+function renderQuotesActivity(quotes) {
+  const container = document.getElementById("quotesActivityContainer");
+
+  if (!quotes.length) {
+    container.innerHTML = `<p class="text-sm text-slate-400">No vendor quotes sent yet</p>`;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  quotes.forEach((quote) => {
+    container.innerHTML += `
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border border-slate-200 rounded-xl p-4">
+        <div>
+          <h4 class="text-sm font-bold text-[#0F172A]">${quote.vendor_name} quoted ${quote.customer_name}</h4>
+          <p class="text-xs text-slate-400 mt-1">${quote.event_type} • ${quote.city} • ${quote.message}</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-black text-[#0F172A]">Rs. ${quote.quote_amount}</span>
+          <span class="px-2.5 py-1 rounded-full ${quote.status === "accepted" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"} text-[10px] font-bold uppercase">
+            ${quote.status}
+          </span>
+        </div>
+      </div>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>

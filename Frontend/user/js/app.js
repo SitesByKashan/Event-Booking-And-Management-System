@@ -39,6 +39,13 @@ function updateUserNavbar() {
 
   if (!authSection) return;
 
+  const vendorDeskLink = document.getElementById("vendorDeskLink");
+
+  if (vendorDeskLink && user && (user.role === "vendor" || user.role === "admin")) {
+    vendorDeskLink.classList.remove("hidden");
+    vendorDeskLink.classList.add("flex");
+  }
+
   if (!user) {
     authSection.innerHTML = `
       <a href="/user/login.html"
@@ -48,6 +55,8 @@ function updateUserNavbar() {
     `;
     return;
   }
+
+  updateNotificationBadge();
 
   const initials = (user.name || "User")
     .split(" ")
@@ -113,6 +122,8 @@ function setActiveNavbarLink() {
   const allowedPages = [
     "index.html",
     "events.html",
+    "custom-event.html",
+    "vendor-requests.html",
     "mybookings.html"
   ];
 
@@ -177,6 +188,30 @@ window.updateUserNavbar = updateUserNavbar;
 window.setActiveNavbarLink = setActiveNavbarLink;
 window.logoutUser = logoutUser;
 window.load = load;
+
+async function updateNotificationBadge() {
+  const badge = document.getElementById("notificationBadge");
+
+  if (!badge || typeof getNotifications !== "function") return;
+
+  try {
+    const response = await getNotifications();
+    const count = Number(response.unread_count || 0);
+
+    if (count > 0) {
+      badge.innerText = count > 9 ? "9+" : count;
+      badge.classList.remove("hidden");
+      badge.classList.add("flex");
+    } else {
+      badge.classList.add("hidden");
+      badge.classList.remove("flex");
+    }
+  } catch (error) {
+    console.log("Notification Badge Error:", error);
+  }
+}
+
+window.updateNotificationBadge = updateNotificationBadge;
 
 // ===============================
 // Old Static Events Grid Support
@@ -308,7 +343,7 @@ function resetAllFilters() {
 // Page Init
 // ===============================
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("events-card-grid")) {
+  if (document.getElementById("events-card-grid") && typeof eventsDataset !== "undefined") {
     buildEventsPageGrid(eventsDataset);
   }
 });

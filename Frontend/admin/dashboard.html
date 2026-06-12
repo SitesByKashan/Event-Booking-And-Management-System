@@ -7,6 +7,7 @@
   <title>EventHub - Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -54,6 +55,38 @@ if (!loggedUser || loggedUser.role !== "admin") {
       </div>
 
       <div id="stats"></div>
+
+      <section class="bg-[#0F172A] text-white rounded-2xl border border-slate-800 p-5 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-indigo-500/20 text-indigo-200 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase tracking-widest text-indigo-200 font-bold">AI Business Insight</p>
+              <h2 class="text-base font-extrabold mt-1">Smart Admin Summary</h2>
+              <p id="aiAdminSummaryText" class="text-sm text-slate-300 mt-2 leading-relaxed">
+                Generating today's AI summary...
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 min-w-full lg:min-w-[320px]">
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+              <p class="text-[10px] text-slate-300 font-bold uppercase">Pending</p>
+              <h3 id="aiPendingBookings" class="text-xl font-black mt-1">0</h3>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+              <p class="text-[10px] text-slate-300 font-bold uppercase">Confirmed</p>
+              <h3 id="aiConfirmedBookings" class="text-xl font-black mt-1">0</h3>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+              <p class="text-[10px] text-slate-300 font-bold uppercase">Cancelled</p>
+              <h3 id="aiCancelledBookings" class="text-xl font-black mt-1">0</h3>
+            </div>
+          </div>
+        </div>
+      </section>
       
       <div id="charts"></div>
 
@@ -67,6 +100,7 @@ if (!loggedUser || loggedUser.role !== "admin") {
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../assets/js/admin-api.js"></script>
+<script src="../assets/js/ai-chatbot.js"></script>
 <script src="js/app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
@@ -89,6 +123,7 @@ load("activity", "Components/activity.html").then(() => {
   loadActivityTimeline();
 });
 
+loadAiAdminSummary();
 
 let revenueChartInstance = null;
 let eventChartInstance = null;
@@ -115,6 +150,35 @@ async function loadDashboardStats() {
 
   } catch (error) {
     console.log("Dashboard Error:", error);
+  }
+}
+
+async function loadAiAdminSummary() {
+  try {
+    const response = await getAiAdminSummary();
+
+    if (!response.status) {
+      document.getElementById("aiAdminSummaryText").innerText =
+        response.message || "AI summary is not available right now.";
+      return;
+    }
+
+    document.getElementById("aiAdminSummaryText").innerText =
+      response.data.summary;
+
+    document.getElementById("aiPendingBookings").innerText =
+      response.data.pending_bookings;
+
+    document.getElementById("aiConfirmedBookings").innerText =
+      response.data.confirmed_bookings;
+
+    document.getElementById("aiCancelledBookings").innerText =
+      response.data.cancelled_bookings;
+
+  } catch (error) {
+    console.log("AI Admin Summary Error:", error);
+    document.getElementById("aiAdminSummaryText").innerText =
+      "AI summary connect nahi ho saka. Backend server running hona chahiye.";
   }
 }
 
