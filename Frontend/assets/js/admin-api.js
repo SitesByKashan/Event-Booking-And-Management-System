@@ -243,18 +243,17 @@ async function updatePassword(data) {
 }
 
 async function updatePaymentStatus(id, payment_status) {
-
-  const response = await fetch(
-    API_URL + "?action=update_payment_status",
-    {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({
-        id,
-        payment_status
-      })
-    }
-  );
+  const response = await fetch(API_BASE_URL + "update_payment_status", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      id,
+      payment_status
+    })
+  });
 
   return await response.json();
 }
