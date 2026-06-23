@@ -64,13 +64,6 @@ async function createBooking(data) {
   return await response.json();
 }
 
-async function getUserBookings(userId) {
-  const res = await fetch(API_BASE_URL + "get_user_bookings&user_id=" + userId, {
-    credentials: "include"
-  });
-  return await res.json();
-}     
-
 async function getProfile() {
   const response = await fetch(API_BASE_URL + "get_profile", {
     credentials: "include"
@@ -147,7 +140,6 @@ async function createPayment(data) {
 
     return await response.json();
 }
-
 async function becomeVendor() {
   const response = await fetch(API_BASE_URL + "become_vendor", {
     method: "POST",
